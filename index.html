@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BIDmesto.lol – Рейтинг за деньги</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      background: #fafafa; 
+      color: #111; 
+      line-height: 1.5; 
+    }
+    .container { max-width: 700px; margin: 0 auto; padding: 20px 16px; }
+    header { text-align: center; padding: 40px 0 20px; }
+    h1 { font-size: 2.4rem; font-weight: 800; letter-spacing: -1.5px; }
+    .tagline { color: #555; font-size: 1.1rem; margin-top: 8px; }
+    .stats { color: #888; font-size: 0.9rem; margin-top: 10px; }
+    nav { text-align: center; margin: 20px 0 30px; }
+    nav a { 
+      margin: 0 14px; 
+      color: #555; 
+      text-decoration: none; 
+      font-size: 0.95rem; 
+      cursor: pointer;
+    }
+    nav a:hover { color: #000; }
+    .card { 
+      background: white; 
+      border-radius: 16px; 
+      padding: 28px; 
+      margin-bottom: 24px; 
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04); 
+      border: 1px solid #eee; 
+    }
+    .card h2 { font-size: 1.4rem; margin-bottom: 12px; }
+    input, select, button { 
+      width: 100%; 
+      padding: 14px 16px; 
+      margin: 8px 0; 
+      border: 1px solid #ddd; 
+      border-radius: 10px; 
+      font-size: 1rem; 
+    }
+    button { 
+      background: #111; 
+      color: white; 
+      font-weight: 600; 
+      border: none; 
+      cursor: pointer; 
+      transition: 0.2s; 
+    }
+    button:hover { background: #333; }
+    .empty { 
+      text-align: center; 
+      padding: 60px 20px; 
+      color: #666; 
+      background: white;
+      border-radius: 16px;
+      border: 1px dashed #ddd;
+    }
+    .empty h3 { font-size: 1.3rem; margin-bottom: 10px; color: #333; }
+    .rank-item { 
+      background: white; 
+      border: 1px solid #eee; 
+      border-radius: 12px; 
+      padding: 18px; 
+      margin-bottom: 12px; 
+    }
+    .rank-header { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 6px; }
+    .bid { color: #0a7a0a; }
+    .desc { color: #555; font-size: 0.95rem; margin: 6px 0; }
+    .meta { font-size: 0.85rem; color: #888; }
+    .claim-btn { 
+      display: inline-block; 
+      margin-top: 10px; 
+      padding: 8px 14px; 
+      background: #f0f0f0; 
+      border-radius: 8px; 
+      font-size: 0.9rem; 
+      color: #111; 
+      border: none;
+      cursor: pointer;
+    }
+    .claim-btn:hover { background: #e0e0e0; }
+    footer { text-align: center; margin: 50px 0 30px; color: #888; font-size: 0.9rem; }
+    .page { display: none; }
+    .page.active { display: block; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>BIDmesto.lol</h1>
+      <div class="tagline">Публичный рейтинг. Кто платит больше — тот наверху.</div>
+      <div class="stats" id="stats">0 онлайн · 0 посетителей · 0 кликов</div>
+    </header>
+
+    <nav>
+      <a onclick="showPage('home')">Главная</a>
+      <a onclick="showPage('rules')">Правила</a>
+      <a onclick="showPage('about')">О проекте</a>
+    </nav>
+
+    <!-- HOME -->
+    <div id="home" class="page active">
+      <div class="card">
+        <h2>Занять #1</h2>
+        <p style="color:#555; margin-bottom:16px;">
+          Новые места начинаются с <strong>$5</strong>. Платите меньше — всё равно попадёте в рейтинг.
+        </p>
+        
+        <select id="category">
+          <option value="">Выберите категорию</option>
+          <option>ИИ-агенты и инфраструктура</option>
+          <option>SEO и видимость в ИИ</option>
+          <option>Крипто, Web3 и инвестиции</option>
+          <option>Инструменты для разработчиков</option>
+          <option>Маркетинг и реклама</option>
+          <option>Бизнес и финансы</option>
+          <option>Работа и карьера</option>
+          <option>Другое</option>
+        </select>
+        
+        <input type="text" id="url" placeholder="URL сайта или @handle в X">
+        <input type="number" id="bid" placeholder="Ваша ставка в USD" min="5" value="5">
+        <button onclick="placeBid()">Перебить</button>
+        
+        <p style="margin-top:14px; font-size:0.9rem; color:#666;">
+          Уже есть в списке? Введите тот же URL или @handle и повысьте ставку.
+        </p>
+      </div>
+
+      <div id="ranking"></div>
+    </div>
+
+    <!-- RULES -->
+    <div id="rules" class="page">
+      <div class="card">
+        <h2>Правила</h2>
+        <p><strong>BIDmesto.lol</strong> — публичный рейтинг. Нет рекламы, нет API, нет деления дохода. Вы платите, чтобы быть выше остальных. Место = ставка.</p>
+        
+        <br>
+        <h3>Как работает рейтинг</h3>
+        <ul style="padding-left:20px; margin:12px 0; line-height:1.7;">
+          <li>Новые места начинаются с $5.</li>
+          <li>Чтобы занять #1, нужно заплатить минимум на $5 больше текущей максимальной ставки.</li>
+          <li>Если ставка меньше — вы попадаете на ту позицию, которую позволяет ваша сумма.</li>
+          <li>Можно повысить свою собственную ставку в любой момент (платите только разницу).</li>
+          <li>Одинаковые ставки — кто раньше поставил, тот выше.</li>
+        </ul>
+
+        <h3>Что можно добавлять</h3>
+        <ul style="padding-left:20px; margin:12px 0; line-height:1.7;">
+          <li>Сайт продукта или @handle в X.</li>
+          <li>Запрещены ссылки на чаты (Telegram, WhatsApp, Discord и т.д.).</li>
+          <li>Запрещён сексуальный и NSFW-контент.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div id="about" class="page">
+      <div class="card">
+        <h2>О проекте</h2>
+        <p>BIDmesto.lol — простой рейтинг, где позиция покупается за реальные деньги.</p>
+        <p style="margin-top:12px;">Без сложных алгоритмов. Без лайков. Без подписчиков. Только деньги.</p>
+        <p style="margin-top:12px;">Кто платит больше — тот на первом месте.</p>
+        <br>
+        <p style="color:#666; font-size:0.95rem;">Русская версия · Независимый проект.</p>
+      </div>
+    </div>
+
+    <footer>
+      <p>Место = ставка. Больше ничего.</p>
+    </footer>
+  </div>
+
+  <script>
+    // ===== MA'LUMOTLAR =====
+    let listings = JSON.parse(localStorage.getItem('bidmesto_listings')) || [];
+    let visitors = parseInt(localStorage.getItem('bidmesto_visitors')) || 0;
+    let totalClicks = parseInt(localStorage.getItem('bidmesto_clicks')) || 0;
+
+    // Har safar kirganda visitor +1
+    visitors++;
+    localStorage.setItem('bidmesto_visitors', visitors);
+
+    function updateStats() {
+      document.getElementById('stats').innerText = 
+        `1 онлайн · ${visitors} посетителей · ${totalClicks} кликов`;
+    }
+
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+    }
+
+    function placeBid() {
+      const url = document.getElementById('url').value.trim();
+      const bid = parseFloat(document.getElementById('bid').value);
+      const category = document.getElementById('category').value;
+
+      if (!url || !bid || bid < 5) {
+        alert('Заполните все поля. Минимальная ставка — $5');
+        return;
+      }
+
+      // Demo rejim
+      alert(`ДЕМО-РЕЖИМ\n\nПлатёж $${bid} за "${url}"\n\nВ реальной версии здесь будет YooKassa / Stripe.`);
+
+      // Mavjud bo'lsa yangilash, yo'qsa qo'shish
+      const existing = listings.find(l => l.url.toLowerCase() === url.toLowerCase());
+      if (existing) {
+        if (bid <= existing.bid) {
+          alert('Новая ставка должна быть выше текущей');
+          return;
+        }
+        existing.bid = bid;
+        existing.category = category || existing.category;
+        existing.time = 'Только что';
+      } else {
+        listings.push({
+          url: url,
+          bid: bid,
+          category: category || 'Другое',
+          clicks: 0,
+          time: 'Только что'
+        });
+      }
+
+      // Saralash (eng katta stavka yuqorida)
+      listings.sort((a, b) => b.bid - a.bid);
+
+      localStorage.setItem('bidmesto_listings', JSON.stringify(listings));
+      renderRanking();
+
+      // Formani tozalash
+      document.getElementById('url').value = '';
+      document.getElementById('bid').value = '5';
+      document.getElementById('category').value = '';
+    }
+
+    function claimRank(index) {
+      const item = listings[index];
+      document.getElementById('url').value = item.url;
+      document.getElementById('bid').value = item.bid + 1;
+      document.getElementById('category').value = item.category;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function addClick(index) {
+      listings[index].clicks++;
+      totalClicks++;
+      localStorage.setItem('bidmesto_listings', JSON.stringify(listings));
+      localStorage.setItem('bidmesto_clicks', totalClicks);
+      renderRanking();
+      updateStats();
+    }
+
+    function renderRanking() {
+      const container = document.getElementById('ranking');
+      
+      if (listings.length === 0) {
+        container.innerHTML = `
+          <div class="empty">
+            <h3>Рейтинг пуст</h3>
+            <p>Пока никто не сделал ставку.<br>Станьте первым и установите цену за #1.</p>
+          </div>`;
+        return;
+      }
+
+      let html = '';
+      listings.forEach((item, i) => {
+        html += `
+          <div class="rank-item">
+            <div class="rank-header">
+              <span>#${i + 1}</span>
+              <span class="bid">$${item.bid}</span>
+            </div>
+            <div style="font-weight:600; font-size:1.1rem; cursor:pointer;" onclick="addClick(${i})">
+              ${item.url}
+            </div>
+            <div class="meta">${item.time} · ${item.category} · ${item.clicks} кликов</div>
+            <button class="claim-btn" onclick="claimRank(${i})">
+              Занять это место за $${item.bid + 1}
+            </button>
+          </div>`;
+      });
+      container.innerHTML = html;
+    }
+
+    // Sahifa yuklanganda
+    updateStats();
+    renderRanking();
+  </script>
+</body>
+</html>
