@@ -4,187 +4,272 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BIDmesto.lol — Аукцион мест #1</title>
-    
-    <!-- Favicon (Иконка в вкладке браузера) -->
+
+    <!-- Favicon (Logotip) -->
     <link rel="icon" type="image/jpeg" href="favion.png.jpg">
     <link rel="apple-touch-icon" href="favion.png.jpg">
 
-    <!-- CSS Стили -->
     <style>
         :root {
-            --bg-color: #090a0f;
-            --card-bg: #15171e;
-            --accent-gold: #FFD700;
-            --text-color: #F3F4F6;
-            --text-muted: #9CA3AF;
-            --border-color: rgba(255, 215, 0, 0.2);
+            --bg: #0b0f19;
+            --card-bg: rgba(21, 27, 46, 0.7);
+            --border: rgba(255, 215, 0, 0.15);
+            --gold: #ffd700;
+            --gold-glow: rgba(255, 215, 0, 0.3);
+            --text: #f3f4f6;
+            --muted: #9ca3af;
         }
 
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: var(--bg);
+            color: var(--text);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            padding: 20px 10px;
         }
 
-        header {
+        .container {
             width: 100%;
-            max-width: 800px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px 20px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            margin-bottom: 30px;
+            max-width: 600px;
         }
 
-        .logo-container {
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 12px 20px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 25px;
+        }
+
+        .logo-box {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             text-decoration: none;
         }
 
         .logo-img {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 8px;
             object-fit: cover;
         }
 
         .logo-text {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 800;
             color: #fff;
-            letter-spacing: -0.5px;
         }
 
-        .logo-text span {
-            color: var(--accent-gold);
-        }
+        .logo-text span { color: var(--gold); }
 
-        .btn-bid {
-            background: linear-gradient(135deg, #FFF7AD 0%, #FFAA00 50%, #B8860B 100%);
+        .btn-buy {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
             color: #000;
             font-weight: 700;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 10px;
             text-decoration: none;
-            transition: transform 0.2s, opacity 0.2s;
+            font-size: 0.9rem;
+            transition: 0.2s;
         }
 
-        .btn-bid:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
-        }
+        .btn-buy:hover { opacity: 0.9; transform: scale(1.02); }
 
-        main {
-            width: 100%;
-            max-width: 800px;
+        /* Hero */
+        .hero {
             text-align: center;
+            margin-bottom: 30px;
         }
 
-        .hero-title {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #FFF 0%, #FFD700 100%);
+        .hero h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, var(--gold));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
         }
 
-        .hero-subtitle {
-            color: var(--text-muted);
-            margin-bottom: 30px;
-            font-size: 1.1rem;
+        .hero p {
+            color: var(--muted);
+            font-size: 0.95rem;
         }
 
+        /* Leaderboard */
         .leaderboard {
             display: flex;
             flex-direction: column;
             gap: 12px;
+            margin-bottom: 30px;
         }
 
-        .item-card {
+        .card {
             background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 16px 20px;
-            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            position: relative;
+            overflow: hidden;
         }
 
-        .item-rank {
+        .card.top-1 {
+            border-color: var(--gold);
+            box-shadow: 0 0 15px var(--gold-glow);
+        }
+
+        .rank {
             font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--accent-gold);
-            width: 40px;
+            font-weight: 800;
+            color: var(--gold);
+            width: 35px;
         }
 
-        .item-info {
-            text-align: left;
+        .info {
             flex-grow: 1;
-            margin: 0 15px;
+            padding: 0 10px;
         }
 
-        .item-title {
+        .info .title {
             font-weight: 600;
+            font-size: 1rem;
             color: #fff;
         }
 
-        .item-price {
+        .info .cat {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        .bid-price {
+            text-align: right;
             font-weight: 700;
-            color: var(--accent-gold);
+            color: var(--gold);
+            font-size: 1.1rem;
+        }
+
+        /* Rules & Info Section */
+        .rules-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+
+        .rules-box h2 {
+            font-size: 1.1rem;
+            color: var(--gold);
+            margin-bottom: 12px;
+        }
+
+        .rules-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .rules-list li::before {
+            content: "• ";
+            color: var(--gold);
+            font-weight: bold;
         }
 
         footer {
-            margin-top: auto;
-            padding-top: 40px;
-            color: var(--text-muted);
-            font-size: 0.9rem;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.85rem;
+            padding: 20px 0;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <a href="#" class="logo-container">
-            <img src="favion.png.jpg" alt="BIDmesto Logo" class="logo-img">
-            <div class="logo-text">BID<span>mesto.lol</span></div>
-        </a>
-        <a href="https://t.me/your_bot_username" target="_blank" class="btn-bid">Купить место 🚀</a>
-    </header>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <a href="#" class="logo-box">
+                <img src="favion.png.jpg" alt="BIDmesto Logo" class="logo-img">
+                <div class="logo-text">BID<span>mesto.lol</span></div>
+            </a>
+            <a href="https://t.me/your_bot_username" target="_blank" class="btn-buy">Купить место 🚀</a>
+        </header>
 
-    <main>
-        <h1 class="hero-title">Займите место №1 на главной странице</h1>
-        <p class="hero-subtitle">Проект с самой высокой ставкой находится на вершине!</p>
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1>Борьба за Место №1</h1>
+            <p>Проект с наибольшей ставкой поднимается на вершину рейтинга!</p>
+        </div>
 
+        <!-- Leaderboard (Auktsion Ro'yxati) -->
         <div class="leaderboard">
-            <div class="item-card">
-                <div class="item-rank">#1</div>
-                <div class="item-info">
-                    <div class="item-title">Здесь может быть ваш проект</div>
+            <!-- Top 1 -->
+            <div class="card top-1">
+                <div class="rank">#1</div>
+                <div class="info">
+                    <div class="title">Здесь может быть ваш проект</div>
+                    <div class="cat">🤖 Telegram Бот / Сервис</div>
                 </div>
-                <div class="item-price">100 $</div>
+                <div class="bid-price">$100</div>
+            </div>
+
+            <!-- Top 2 -->
+            <div class="card">
+                <div class="rank">#2</div>
+                <div class="info">
+                    <div class="title">Займите второе место</div>
+                    <div class="cat">📣 Канал / Сообщество</div>
+                </div>
+                <div class="bid-price">$50</div>
+            </div>
+
+            <!-- Top 3 -->
+            <div class="card">
+                <div class="rank">#3</div>
+                <div class="info">
+                    <div class="title">Свободное место</div>
+                    <div class="cat">💻 Стартап / Сайт</div>
+                </div>
+                <div class="bid-price">$20</div>
             </div>
         </div>
-    </main>
 
-    <footer>
-        &copy; 2026 BIDmesto.lol — Все права защищены.
-    </footer>
+        <!-- Rules Section (Правила) -->
+        <div class="rules-box">
+            <h2>Как это работает?</h2>
+            <ul class="rules-list">
+                <li>Перейдите в Telegram-бота через кнопку «Купить место».</li>
+                <li>Укажите ссылку на ваш проект, название и перебейте текущую ставку.</li>
+                <li>После оплаты ваш проект моментально отобразится в списке.</li>
+                <li>Если вашу ставку перебьют, вы можете подняться выше в любое время!</li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            &copy; 2026 BIDmesto.lol — Все права защищены.
+        </footer>
+    </div>
 
 </body>
 </html>
