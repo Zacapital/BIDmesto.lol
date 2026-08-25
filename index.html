@@ -1,159 +1,493 @@
-import os
-import logging
-import urllib.parse
-from aiogram import Bot, Dispatcher, types
-from aiogram.filters import CommandStart
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, ContentType
-from aiogram.enums import ParseMode
-import asyncio
-import re
-from supabase import create_client
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIDmesto.lol — Рейтинг за деньги</title>
 
-# Supabase Sozlamalari
-SUPABASE_URL = "https://wtgtmeodtuimjvqoqfzc.supabase.co"
-SUPABASE_KEY = "sb_publishable_rRnaaXbZYHD3ZOmz2pFsEA_31X9MzLz"
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+<!-- Favicon (Logotip) -->
+<link rel="icon" type="image/jpeg" href="favion.png.jpg">
+<link rel="apple-touch-icon" href="favion.png.jpg">
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-ADMIN_ID = 6606071265
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-VISA = "4023 0601 4330 7436"
-MASTERCARD = "5476 3815 0507 5414"
-CARD_NAME = "ASLBEK ZIYODULLAYEV"
+<style>
+  :root{
+    --bg:#06120d;
+    --bg-2:#0c2119;
+    --card:#0f251c;
+    --border:rgba(43, 179, 122, 0.25);
+    --primary:#1f8f5f;
+    --primary-light:#2bb37a;
+    --gold:#ffd700;
+    --gold-glow:rgba(255, 215, 0, 0.25);
+    --text:#f3f1ea;
+    --muted:#9db3aa;
+    --muted-2:#6f8579;
+    --danger:#e5484d;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:linear-gradient(180deg, #040a08 0%, #0c2119 100%);
+    color:var(--text);
+    font-family:'Segoe UI',Roboto,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:820px;margin:0 auto;padding:24px 18px 60px;}
 
-logging.basicConfig(level=logging.INFO)
-bot = Bot(token=BOT_TOKEN)
-dp = Dispatcher()
+  .ribbon{
+    background:#132e22;border:1px solid #2bb37a55;color:#c9e8d8;
+    font-size:13px;padding:9px 14px;border-radius:10px;text-align:center;margin-bottom:20px;
+  }
+  .ribbon b{color:var(--gold);}
 
-# Foydalanuvchilar buyurtmalarini saqlash
-user_data = {}
+  header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:26px;}
+  
+  .logo-box{display:flex;align-items:center;gap:10px;text-decoration:none;}
+  .logo-img{width:38px;height:38px;border-radius:8px;object-fit:cover;}
+  .logo-text{font-weight:800;font-size:24px;letter-spacing:-0.5px;color:#fff;}
+  .logo-text span{color:var(--gold);}
 
-@dp.message(CommandStart())
-async def start_handler(message: Message):
-    args = message.text.split(maxsplit=1)
-    
-    amount = "5"
-    cat = "other"
-    url = "—"
+  nav{display:flex;gap:18px;font-size:14px;color:var(--muted);}
+  nav a{cursor:pointer;transition:color 0.2s;}
+  nav a:hover{color:var(--gold);}
+  .live{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--primary-light);
+    background:#0f251c;padding:6px 12px;border-radius:999px;border:1px solid var(--border);}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--primary-light);animation:pulse 1.4s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
 
-    if len(args) > 1:
-        payload = args[1]
-        
-        # bid_20, cat_ai, url_... parsing
-        bid_match = re.search(r'bid_(\d+)', payload)
-        cat_match = re.search(r'cat_([^_]+)', payload)
-        url_match = re.search(r'url_(.+)', payload)
+  .hero{text-align:center;margin-bottom:26px;}
+  .hero h1{
+    font-size:32px;font-weight:800;margin:0 0 10px;line-height:1.25;
+    background: linear-gradient(135deg, #FFF 0%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero p{color:var(--muted);font-size:14.5px;max-width:520px;margin:0 auto;line-height:1.55;}
 
-        if bid_match:
-            amount = bid_match.group(1)
-        if cat_match:
-            cat = cat_match.group(1)
-        if url_match:
-            raw_url = url_match.group(1)
-            url = urllib.parse.unquote(raw_url)
+  .form-card{
+    background:var(--card);border:1px solid var(--border);border-radius:18px;
+    padding:20px;margin:22px 0 26px;display:flex;flex-direction:column;gap:12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .form-row{display:flex;gap:10px;flex-wrap:wrap;}
+  .form-row input[type=text], .form-row select{
+    flex:1;min-width:160px;background:#081712;border:1px solid var(--border);
+    color:var(--text);padding:12px 14px;border-radius:10px;font-size:14px;outline:none;
+  }
+  .form-row input:focus, .form-row select:focus{border-color:var(--gold);}
+  .stepper{
+    display:flex;align-items:center;gap:4px;background:#081712;border:1px solid var(--border);
+    border-radius:10px;padding:5px;
+  }
+  .stepper button{
+    width:32px;height:32px;border-radius:8px;border:none;background:var(--border);
+    color:var(--text);font-size:18px;cursor:pointer;line-height:1;
+  }
+  .stepper button:hover{background:var(--gold);color:#081712;}
+  .stepper input{
+    width:90px;text-align:center;background:transparent;border:none;color:var(--text);
+    font-weight:700;font-size:15px;outline:none;
+  }
+  .claim-btn{
+    background:linear-gradient(135deg, #FFF7AD 0%, #FFAA00 50%, #B8860B 100%);
+    color:#06140f;border:none;padding:14px 18px;border-radius:10px;
+    font-weight:800;font-size:14.5px;cursor:pointer;flex:1;min-width:220px;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  .claim-btn:hover{transform:translateY(-1px);filter:brightness(1.05);}
+  .hint{font-size:12px;color:var(--muted-2);text-align:center;}
+  .field-error{font-size:12.5px;color:var(--danger);text-align:center;display:none;}
 
-    # Foydalanuvchi ma'lumotlarini saqlaymiz
-    user_data[message.from_user.id] = {
-        "amount": amount,
-        "cat": cat,
-        "url": url
+  .tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:20px;scrollbar-width:none;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{
+    flex-shrink:0;background:var(--card);border:1px solid var(--border);color:var(--muted);
+    font-size:13px;padding:7px 14px;border-radius:999px;cursor:pointer;white-space:nowrap;
+  }
+  .tab.active{background:linear-gradient(135deg, #ffd700, #ffaa00);color:#06140f;border-color:var(--gold);font-weight:700;}
+
+  .top3{display:grid;gap:10px;margin-bottom:16px;}
+  .top-card{
+    display:flex;align-items:center;gap:12px;background:#0e241b;border:1px solid #2bb37a55;
+    border-radius:16px;padding:12px 14px;
+  }
+  .top-card.gold{border-color:var(--gold);background:rgba(212, 175, 55, 0.1);box-shadow: 0 0 15px var(--gold-glow);}
+  .rank{
+    font-weight:800;font-size:13px;background:var(--primary-light);color:#06140f;
+    border-radius:999px;min-width:30px;height:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .top-card.gold .rank{background:var(--gold);}
+  .icon{
+    width:38px;height:38px;border-radius:10px;background:var(--border);
+    display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;
+  }
+  .info{flex:1;min-width:0;}
+  .name-row{display:flex;justify-content:space-between;gap:10px;align-items:baseline;}
+  .name{font-weight:700;font-size:14.5px;color:var(--gold);text-decoration:underline;}
+  .name:hover{color:#fff;}
+  .bid{font-weight:800;color:var(--gold);font-size:14.5px;white-space:nowrap;}
+  .desc{color:var(--muted);font-size:12.5px;margin-top:3px;word-break:break-all;}
+  .meta{font-size:11px;color:var(--muted-2);margin-top:4px;}
+
+  .list-row{
+    display:flex;align-items:center;gap:12px;padding:11px 6px;border-bottom:1px solid #1e453655;
+  }
+  .list-row .rank{background:var(--border);color:var(--muted);}
+
+  .empty{text-align:center;color:var(--muted-2);padding:40px 20px;font-size:14px;background:var(--card);border-radius:16px;border:1px dashed var(--border);}
+
+  .more-btn{
+    display:block;margin:16px auto 0;background:none;border:1px solid var(--border);
+    color:var(--muted);padding:9px 20px;border-radius:999px;font-size:13px;cursor:pointer;
+  }
+  .more-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+  footer{margin-top:32px;text-align:center;padding-top:22px;border-top:1px solid var(--border);}
+  .total-label{color:var(--muted);font-size:12.5px;}
+  .total{font-size:34px;font-weight:800;color:var(--gold);font-family:monospace;margin:4px 0;}
+  .foot-note{color:var(--muted-2);font-size:11.5px;margin-top:8px;}
+  .credit{color:var(--muted-2);font-size:11px;margin-top:18px;}
+
+  .page{display:none;}
+  .page.active{display:block;}
+
+  .card-page{
+    background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;margin-top:20px;
+  }
+  .card-page h2{margin-top:0;margin-bottom:14px;color:var(--gold);}
+  .card-page h3{margin-top:18px;margin-bottom:8px;color:var(--primary-light);}
+  .card-page ul{padding-left:20px;line-height:1.7;color:var(--muted);}
+  .card-page p{color:var(--muted);line-height:1.6;}
+
+  @media(max-width:520px){
+    .hero h1{font-size:24px;}
+    .claim-btn{min-width:100%;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="ribbon">💳 Оплата через Telegram-бот · После подтверждения место появится в рейтинге</div>
+
+  <header>
+    <a href="#" class="logo-box" onclick="showPage('home')">
+      <img src="favion.png.jpg" alt="BIDmesto Logo" class="logo-img">
+      <div class="logo-text">BID<span>mesto.lol</span></div>
+    </a>
+    <nav>
+      <a onclick="showPage('home')">Топ</a>
+      <a onclick="showPage('rules')">Правила</a>
+      <a onclick="showPage('about')">О проекте</a>
+    </nav>
+    <div class="live"><span class="dot"></span> <span id="onlineCount">1</span> сейчас на сайте</div>
+  </header>
+
+  <!-- HOME -->
+  <div id="home" class="page active">
+    <div class="hero">
+      <h1>Займи место №1</h1>
+      <p>Новое место — от $5. Ставка ниже топовой всё равно попадает в список. Перебей конкурента в любой момент.</p>
+      <div style="margin-top:10px;font-size:13px;color:var(--muted-2);" id="statsLine">0 посетителей · 0 кликов</div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-row">
+        <input type="text" id="bidUrl" placeholder="URL сайта или @handle в X">
+        <select id="bidCat"></select>
+      </div>
+      <div class="form-row" style="align-items:center;">
+        <div class="stepper">
+          <button id="decBtn" type="button">−</button>
+          <input type="number" id="bidAmount" value="5" min="5" step="1">
+          <button id="incBtn" type="button">+</button>
+        </div>
+        <button class="claim-btn" id="claimBtn" type="button">Оплатить $<span id="claimSum">5</span></button>
+      </div>
+      <div class="field-error" id="fieldError"></div>
+      <div class="hint">Минимальная ставка — $5. После оплаты бот подтвердит платёж и место появится в рейтинге.</div>
+    </div>
+
+    <div class="tabs" id="tabs"></div>
+    <div class="top3" id="top3"></div>
+    <div id="restList"></div>
+    <button class="more-btn" id="moreBtn" style="display:none;">Показать ещё</button>
+  </div>
+
+  <!-- RULES -->
+  <div id="rules" class="page">
+    <div class="card-page">
+      <h2>Правила</h2>
+      <p><strong>BIDmesto.lol</strong> — публичный рейтинг. Вы платите, чтобы быть выше остальных. Место = ставка.</p>
+      
+      <h3>Как работает рейтинг</h3>
+      <ul>
+        <li>Новые места начинаются с $5.</li>
+        <li>Чтобы занять #1, нужно предложить сумму выше текущей максимальной ставки.</li>
+        <li>Если ставка меньше — вы попадаете на позицию, которую позволяет ваша сумма.</li>
+        <li>Можно повысить свою собственную ставку в любой момент.</li>
+        <li>Одинаковые ставки — кто раньше оплатил, тот выше.</li>
+      </ul>
+
+      <h3>Что можно добавлять</h3>
+      <ul>
+        <li>Сайт продукта или @handle в X.</li>
+        <li>Запрещены ссылки на чаты (Telegram, WhatsApp, Discord и т.д.).</li>
+        <li>Запрещён сексуальный и NSFW-контент.</li>
+      </ul>
+
+      <h3>Оплата</h3>
+      <ul>
+        <li>Оплата проходит через Telegram-бот.</li>
+        <li>После подтверждения платежа место появится в рейтинге.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div id="about" class="page">
+    <div class="card-page">
+      <h2>О проекте</h2>
+      <p>BIDmesto.lol — простой публичный рейтинг, где позиция покупается за реальные деньги.</p>
+      <p>Без сложных алгоритмов. Без лайков. Без подписчиков.</p>
+      <p>Кто платит больше — тот на первом месте.</p>
+      <br>
+      <p>Русская версия · Независимый проект.</p>
+    </div>
+  </div>
+
+  <footer>
+    <div class="total-label">Собрано на щите</div>
+    <div class="total">$<span id="totalSum">0</span></div>
+    <div class="foot-note">Оплата через Telegram-бот · После подтверждения место появится в рейтинге</div>
+    <div class="credit">BIDmesto.lol — место = ставка</div>
+  </footer>
+
+</div>
+
+<script>
+// SUPABASE SOZLAMALARI
+const SUPABASE_URL = 'https://wtgtmeodtuimjvqoqfzc.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_rRnaaXbZYHD3ZOmz2pFsEA_31X9MzLz';
+const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+(function(){
+  const CATS = {
+    all:'Все',
+    ai:'ИИ и автоматизация',
+    market:'Маркетинг и реклама',
+    biz:'Бизнес и финансы',
+    design:'Дизайн и креатив',
+    dev:'Разработка',
+    social:'Соцсети и блогеры',
+    crypto:'Крипто и инвестиции',
+    other:'Разное'
+  };
+  const ICONS = {ai:'🤖',market:'📣',biz:'💼',design:'🎨',dev:'💻',social:'📱',crypto:'₿',other:'✨'};
+
+  let entries = [];
+  let visitors = parseInt(localStorage.getItem('bidmesto_visitors')) || 0;
+  visitors++;
+  localStorage.setItem('bidmesto_visitors', visitors);
+
+  let currentCat = 'all';
+  let visibleCount = 6;
+  const $ = id => document.getElementById(id);
+
+  function money(n){ return Math.round(n).toLocaleString('ru-RU'); }
+
+  window.showPage = function(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+  }
+
+  function updateStats() {
+    const totalClicks = entries.reduce((sum, e) => sum + (e.clicks || 0), 0);
+    $('statsLine').textContent = `${visitors} посетителей · ${totalClicks} кликов`;
+    $('onlineCount').textContent = Math.floor(Math.random()*3)+1;
+  }
+
+  // Klikni Supabase bazasida oshirish
+  window.trackClick = async function(id, currentClicks) {
+    const newCount = (currentClicks || 0) + 1;
+    await _supabase.from('entries').update({ clicks: newCount }).eq('id', id);
+    fetchEntries();
+  };
+
+  async function fetchEntries() {
+    const { data, error } = await _supabase
+      .from('entries')
+      .select('*')
+      .order('bid', { ascending: false });
+
+    if (!error && data) {
+      entries = data;
+      render();
+    }
+  }
+
+  function subscribeRealtime() {
+    _supabase
+      .channel('public:entries')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'entries' }, payload => {
+        fetchEntries();
+      })
+      .subscribe();
+  }
+
+  function renderTabs(){
+    const box = $('tabs'); box.innerHTML = '';
+    Object.keys(CATS).forEach(key=>{
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'tab' + (key===currentCat ? ' active':'');
+      b.textContent = CATS[key];
+      b.onclick = ()=>{ currentCat = key; visibleCount = 6; render(); };
+      box.appendChild(b);
+    });
+  }
+
+  function fillCatSelect(){
+    const sel = $('bidCat'); sel.innerHTML='';
+    Object.keys(CATS).filter(k=>k!=='all').forEach(key=>{
+      const o = document.createElement('option');
+      o.value = key; o.textContent = CATS[key];
+      sel.appendChild(o);
+    });
+  }
+
+  function render(){
+    renderTabs();
+    updateStats();
+
+    const sorted = [...entries].sort((a,b)=>b.bid-a.bid);
+    const filtered = currentCat==='all' ? sorted : sorted.filter(e=>e.cat===currentCat);
+
+    const total = entries.reduce((s,e)=>Number(s)+Number(e.bid),0);
+    $('totalSum').textContent = money(total);
+
+    const top3box = $('top3'); top3box.innerHTML='';
+    const listBox = $('restList'); listBox.innerHTML='';
+
+    if(filtered.length===0){
+      listBox.innerHTML = '<div class="empty">Рейтинг пуст.<br>Станьте первым и установите цену за #1.</div>';
+      $('moreBtn').style.display='none';
+      return;
     }
 
-    text = f"""Здравствуйте!
+    const topThree = filtered.slice(0,3);
+    const rest = filtered.slice(3);
 
-Вы хотите занять место в рейтинге <b>BIDmesto</b>.
+    topThree.forEach(e=>{
+      const rank = filtered.indexOf(e)+1;
+      const card = document.createElement('div');
+      card.className = 'top-card' + (rank===1 ? ' gold':'');
+      const clicks = e.clicks || 0;
+      const siteUrl = escapeHtml(e.url || '');
+      const siteName = escapeHtml(e.name && e.name !== '—' ? e.name : e.url);
 
-Сумма к оплате: <b>${amount}</b>
-Сайт: <b>{url}</b>
+      card.innerHTML =
+        '<div class="rank">#'+rank+'</div>'+
+        '<div class="icon">'+(ICONS[e.cat]||'✨')+'</div>'+
+        '<div class="info">'+
+          '<div class="name-row"><a href="'+siteUrl+'" target="_blank" onclick="trackClick('+e.id+','+clicks+')" class="name">'+siteName+'</a><span class="bid">$'+money(e.bid)+'</span></div>'+
+          '<div class="desc">'+siteUrl+'</div>'+
+          '<div class="meta">'+(CATS[e.cat]||e.cat)+' · 👆 '+clicks+' кликов</div>'+
+        '</div>';
+      top3box.appendChild(card);
+    });
 
-Переведите <b>точную сумму</b> на одну из карт:
+    const shown = rest.slice(0, visibleCount);
+    shown.forEach(e=>{
+      const rank = filtered.indexOf(e)+1;
+      const row = document.createElement('div');
+      row.className = 'list-row';
+      const clicks = e.clicks || 0;
+      const siteUrl = escapeHtml(e.url || '');
+      const siteName = escapeHtml(e.name && e.name !== '—' ? e.name : e.url);
 
-<b>Visa:</b>
-<code>{VISA}</code>
+      row.innerHTML =
+        '<div class="rank">#'+rank+'</div>'+
+        '<div class="icon">'+(ICONS[e.cat]||'✨')+'</div>'+
+        '<div class="info">'+
+          '<div class="name-row"><a href="'+siteUrl+'" target="_blank" onclick="trackClick('+e.id+','+clicks+')" class="name">'+siteName+'</a><span class="bid">$'+money(e.bid)+'</span></div>'+
+          '<div class="desc">'+siteUrl+'</div>'+
+          '<div class="meta">'+(CATS[e.cat]||e.cat)+' · 👆 '+clicks+' кликов</div>'+
+        '</div>';
+      listBox.appendChild(row);
+    });
 
-<b>Mastercard:</b>
-<code>{MASTERCARD}</code>
+    $('moreBtn').style.display = rest.length > visibleCount ? 'block' : 'none';
+  }
 
-Получатель: <b>{CARD_NAME}</b>
+  function escapeHtml(s){
+    if(!s) return '';
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
 
-После оплаты отправьте сюда <b>чек</b> (скриншот или фото квитанции).
+  function updateClaimSum(){
+    $('claimSum').textContent = money(parseInt($('bidAmount').value||5));
+  }
 
-Мы проверим платёж в течение 5–15 минут."""
+  $('decBtn').onclick = ()=>{
+    const inp = $('bidAmount');
+    inp.value = Math.max(5, parseInt(inp.value||5) - 1);
+    updateClaimSum();
+  };
+  $('incBtn').onclick = ()=>{
+    const inp = $('bidAmount');
+    inp.value = parseInt(inp.value||5) + 1;
+    updateClaimSum();
+  };
+  $('bidAmount').oninput = updateClaimSum;
 
-    await message.answer(text, parse_mode=ParseMode.HTML)
+  // Telegram botga o'tish linki (Format aniq birxillashtirildi)
+  $('claimBtn').onclick = ()=>{
+    const errBox = $('fieldError');
+    errBox.style.display = 'none';
 
+    let url = $('bidUrl').value.trim();
+    const cat = $('bidCat').value;
+    const amount = parseInt($('bidAmount').value || '5');
 
-@dp.message(lambda message: message.content_type in [ContentType.PHOTO, ContentType.DOCUMENT])
-async def check_handler(message: Message):
-    user_id = message.from_user.id
-    data = user_data.get(user_id, {"amount": "5", "cat": "other", "url": "—"})
+    if(!url){
+      errBox.textContent = 'Укажи ссылку или @handle.';
+      errBox.style.display = 'block';
+      return;
+    }
 
-    await message.answer("Чек получен ✅\n\nВаш платёж проверяется.\nОбычно это занимает 5–15 минут.\n\nПожалуйста, подождите.")
+    if(url.startsWith('@')) {
+      url = 'https://x.com/' + url.substring(1);
+    } else if(!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'https://' + url;
+    }
 
-    caption = f"""🔔 <b>Новый платёж</b>
+    if(amount < 5){
+      errBox.textContent = 'Минимальная ставка — $5.';
+      errBox.style.display = 'block';
+      return;
+    }
 
-Сумма: <b>${data['amount']}</b>
-Категория: <b>{data['cat']}</b>
-Сайт: <b>{data['url']}</b>
-Пользователь: @{message.from_user.username or 'нет'} (ID: {user_id})
-"""
+    const cleanUrl = encodeURIComponent(url);
+    const deepLink = `https://t.me/BIDmestobot?start=bid_${amount}_cat_${cat}_url_${cleanUrl}`;
 
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [
-            InlineKeyboardButton(text="✅ Подтвердить", callback_data=f"confirm_{user_id}"),
-            InlineKeyboardButton(text="❌ Отклонить", callback_data=f"reject_{user_id}")
-        ]
-    ])
+    window.location.href = deepLink;
+  };
 
-    if message.photo:
-        await bot.send_photo(ADMIN_ID, message.photo[-1].file_id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=keyboard)
-    else:
-        await bot.send_document(ADMIN_ID, message.document.file_id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=keyboard)
+  $('moreBtn').onclick = ()=>{ visibleCount += 6; render(); };
 
-
-@dp.callback_query(lambda c: c.data.startswith("confirm_") or c.data.startswith("reject_"))
-async def process_callback(callback: CallbackQuery):
-    action, target_user_id = callback.data.split("_")
-    target_user_id = int(target_user_id)
-
-    if action == "confirm":
-        data = user_data.get(target_user_id, {"amount": 5, "cat": "other", "url": "https://bidmesto.lol"})
-        
-        # SUPABASE BAZASIGA YOZISH (SAYTDA AVTOMATIK KO'RINADI)
-        try:
-            supabase.table('entries').insert({
-                'url': data['url'],
-                'cat': data['cat'],
-                'bid': int(data['amount']),
-                'name': data['url'],
-                'clicks': 0
-            }).execute()
-            logging.info(f"Supabase success: {data['url']} - ${data['amount']}")
-        except Exception as e:
-            logging.error(f"Supabase Error: {e}")
-
-        await bot.send_message(target_user_id, 
-            "Оплата успешно подтверждена! ✅\n\nВаше место добавлено в рейтинг BIDmesto.\n\nСпасибо за оплату!\nПроверить можно здесь: https://bidmesto.lol")
-        
-        await callback.message.edit_caption(
-            caption=callback.message.caption + f"\n\n✅ <b>Подтверждено (${data['amount']})</b>", 
-            parse_mode=ParseMode.HTML
-        )
-    else:
-        await bot.send_message(target_user_id, 
-            "К сожалению, платёж не подтверждён.\n\nВозможные причины:\n• Неверная сумма\n• Нечёткий чек\n• Оплата не поступила\n\nПожалуйста, отправьте чек ещё раз.")
-        
-        current_caption = callback.message.caption or ""
-        await callback.message.edit_caption(
-            caption=current_caption + "\n\n❌ <b>Отклонено</b>", 
-            parse_mode=ParseMode.HTML
-        )
-
-    await callback.answer()
-
-
-async def main():
-    await dp.start_polling(bot)
-
-if __name__ == "__main__":
-    asyncio.run(main())
+  fillCatSelect();
+  updateClaimSum();
+  fetchEntries();
+  subscribeRealtime();
+})();
+</script>
+</body>
+</html>
