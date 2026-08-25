@@ -143,7 +143,7 @@
 
   .more-btn{
     display:block;margin:16px auto 0;background:none;border:1px solid var(--border);
-    color:var(--muted);padding:9px 20px;border-radius:999px;font-size:13px;cursor:pointer;
+    color:var(--muted);padding:99px;border-radius:999px;font-size:13px;cursor:pointer;
   }
   .more-btn:hover{border-color:var(--gold);color:var(--gold);}
 
@@ -271,7 +271,6 @@
 </div>
 
 <script>
-// SUPABASE SOZLAMALARI
 const SUPABASE_URL = 'https://wtgtmeodtuimjvqoqfzc.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_rRnaaXbZYHD3ZOmz2pFsEA_31X9MzLz';
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -312,7 +311,6 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     $('onlineCount').textContent = Math.floor(Math.random()*3)+1;
   }
 
-  // Klikni Supabase bazasida oshirish
   window.trackClick = async function(id, currentClicks) {
     const newCount = (currentClicks || 0) + 1;
     await _supabase.from('entries').update({ clicks: newCount }).eq('id', id);
@@ -448,7 +446,6 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   };
   $('bidAmount').oninput = updateClaimSum;
 
-  // Telegram botga o'tish linki (Base64 bilan shifrlash qo'shildi)
   $('claimBtn').onclick = ()=>{
     const errBox = $('fieldError');
     errBox.style.display = 'none';
@@ -475,7 +472,6 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       return;
     }
 
-    // Base64 formatida xavfsiz shifrlaymiz
     const safeUrl = btoa(encodeURIComponent(url)).replace(/=/g, '');
     const deepLink = `https://t.me/BIDmestobot?start=b_${amount}_c_${cat}_u_${safeUrl}`;
 
