@@ -396,7 +396,7 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         '<div class="icon">'+(ICONS[e.cat]||'✨')+'</div>'+
         '<div class="info">'+
           '<div class="name-row"><a href="'+siteUrl+'" target="_blank" onclick="trackClick('+e.id+','+clicks+')" class="name">'+siteName+'</a><span class="bid">$'+money(e.bid)+'</span></div>'+
-          '<div class="desc">'+siteUrl+'</div>'+
+          '<div class="desc"><a href="'+siteUrl+'" target="_blank" onclick="trackClick('+e.id+','+clicks+')">'+siteUrl+'</a></div>'+
           '<div class="meta">'+(CATS[e.cat]||e.cat)+' · 👆 '+clicks+' кликов</div>'+
         '</div>';
       top3box.appendChild(card);
@@ -416,7 +416,7 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         '<div class="icon">'+(ICONS[e.cat]||'✨')+'</div>'+
         '<div class="info">'+
           '<div class="name-row"><a href="'+siteUrl+'" target="_blank" onclick="trackClick('+e.id+','+clicks+')" class="name">'+siteName+'</a><span class="bid">$'+money(e.bid)+'</span></div>'+
-          '<div class="desc">'+siteUrl+'</div>'+
+          '<div class="desc"><a href="'+siteUrl+'" target="_blank" onclick="trackClick('+e.id+','+clicks+')">'+siteUrl+'</a></div>'+
           '<div class="meta">'+(CATS[e.cat]||e.cat)+' · 👆 '+clicks+' кликов</div>'+
         '</div>';
       listBox.appendChild(row);
@@ -448,7 +448,7 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   };
   $('bidAmount').oninput = updateClaimSum;
 
-  // Telegram botga o'tish linki (Format aniq birxillashtirildi)
+  // Telegram botga o'tish linki (Base64 bilan shifrlash qo'shildi)
   $('claimBtn').onclick = ()=>{
     const errBox = $('fieldError');
     errBox.style.display = 'none';
@@ -475,8 +475,9 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       return;
     }
 
-    const cleanUrl = encodeURIComponent(url);
-    const deepLink = `https://t.me/BIDmestobot?start=bid_${amount}_cat_${cat}_url_${cleanUrl}`;
+    // Base64 formatida xavfsiz shifrlaymiz
+    const safeUrl = btoa(encodeURIComponent(url)).replace(/=/g, '');
+    const deepLink = `https://t.me/BIDmestobot?start=b_${amount}_c_${cat}_u_${safeUrl}`;
 
     window.location.href = deepLink;
   };
