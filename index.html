@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>BIDmesto.lol — Рейтинг за деньги</title>
 
 <link rel="icon" type="image/jpeg" href="favion.png.jpg">
@@ -12,169 +12,209 @@
 
 <style>
   :root {
-    /* APPLE.COM OFFICIAL COLOR PALETTE */
-    --bg-page: #f5f5f7;            /* Apple'ning rasmiy och fon rangi */
-    --bg-card: #ffffff;            /* Sof oq bloklar */
+    --bg-page: #f5f5f7;
+    --bg-card: #ffffff;
     --card-border: rgba(0, 0, 0, 0.08);
-    --text-primary: #1d1d1f;       /* Apple asosiy toq matn rangi */
-    --text-secondary: #86868b;     /* Apple ikkinchi darajali matn rangi */
-    --apple-blue: #0066cc;         /* Apple havola va tugma ko'k rangi */
-    --accent-gold: #d4a373;        /* Altin rang urg'u */
+    --text-primary: #1d1d1f;
+    --text-secondary: #86868b;
+    --apple-blue: #0066cc;
     --radius: 18px;
+    --radius-sm: 12px;
     --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
   }
 
-  * { box-sizing: border-box; }
-  body {
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  
+  html, body {
     margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
     background-color: var(--bg-page);
     color: var(--text-primary);
     font-family: var(--font);
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
-  }
-  a { color: inherit; text-decoration: none; }
-  .wrap { max-width: 860px; margin: 0 auto; padding: 40px 20px 80px; }
-
-  .top-banner {
-    background: rgba(0, 0, 0, 0.03);
-    border: 1px solid var(--card-border);
-    backdrop-filter: blur(20px);
-    border-radius: 14px;
-    padding: 12px 18px;
-    font-size: 13px;
-    text-align: center;
-    color: var(--text-secondary);
-    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
+  .wrap {
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 20px 16px 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* HEADER */
   header {
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 40px;
+    margin-bottom: 24px;
+    padding: 10px 0;
+    flex-wrap: wrap;
+    gap: 12px;
   }
-  .logo-box { display: flex; align-items: center; gap: 12px; }
-  .logo-img { width: 36px; height: 36px; border-radius: 10px; object-fit: cover; }
-  .logo-text { font-size: 22px; font-weight: 600; letter-spacing: -0.5px; color: var(--text-primary); }
+  .logo-box { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-img { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; }
+  .logo-text { font-size: 19px; font-weight: 600; letter-spacing: -0.5px; color: var(--text-primary); }
   .logo-text span { color: var(--apple-blue); }
 
-  nav { display: flex; gap: 24px; font-size: 14px; color: var(--text-secondary); }
+  nav { display: flex; gap: 16px; font-size: 14px; color: var(--text-secondary); }
   nav a { transition: color 0.2s; cursor: pointer; }
   nav a:hover { color: var(--text-primary); }
 
   .live-badge {
-    display: flex; align-items: center; gap: 8px; font-size: 12px;
-    color: #28cd41; background: rgba(40, 205, 65, 0.12); padding: 6px 14px; border-radius: 999px;
+    display: flex; align-items: center; gap: 6px; font-size: 12px;
+    color: #28cd41; background: rgba(40, 205, 65, 0.12); padding: 5px 12px; border-radius: 999px;
   }
   .dot { width: 6px; height: 6px; border-radius: 50%; background: #28cd41; animation: pulse 1.5s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-  .hero { text-align: center; margin-bottom: 40px; }
+  /* HERO SECTION */
+  .hero { text-align: center; margin-bottom: 24px; width: 100%; }
   .hero h1 {
-    font-size: 44px; font-weight: 700; letter-spacing: -1px; margin: 0 0 12px;
-    color: var(--text-primary);
+    font-size: 32px; font-weight: 700; letter-spacing: -1px; margin: 0 0 8px;
+    color: var(--text-primary); line-height: 1.15;
   }
-  .hero p { color: var(--text-secondary); font-size: 17px; max-width: 580px; margin: 0 auto; line-height: 1.45; }
+  .hero p { color: var(--text-secondary); font-size: 15px; max-width: 500px; margin: 0 auto; line-height: 1.4; }
+  .hero .stats-line { margin-top: 8px; font-size: 13px; color: var(--text-secondary); }
 
+  /* FORM CARD */
   .form-card {
+    width: 100%;
     background: var(--bg-card); border: 1px solid var(--card-border);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04); border-radius: var(--radius); padding: 24px;
-    margin-bottom: 36px; display: flex; flex-direction: column; gap: 14px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); border-radius: var(--radius); padding: 20px;
+    margin-bottom: 24px; display: flex; flex-direction: column; gap: 14px;
+    align-items: center;
   }
-  .form-row { display: flex; gap: 12px; flex-wrap: wrap; }
-  .form-row input[type=text], .form-row select {
-    flex: 1; min-width: 180px; background: #f2f2f7; border: 1px solid rgba(0, 0, 0, 0.05);
-    color: var(--text-primary); padding: 14px 16px; border-radius: 12px; font-size: 15px; outline: none; transition: border-color 0.2s;
-  }
-  .form-row input:focus, .form-row select:focus { border-color: var(--apple-blue); background: #fff; }
   
+  .form-inputs-group { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+  .form-actions-group { width: 100%; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+
+  .input-field, .select-field {
+    width: 100%; background: #f2f2f7; border: 1px solid rgba(0, 0, 0, 0.05);
+    color: var(--text-primary); padding: 14px 16px; border-radius: var(--radius-sm); font-size: 15px; outline: none; transition: border-color 0.2s;
+  }
+  .input-field:focus, .select-field:focus { border-color: var(--apple-blue); background: #fff; }
+  
+  /* STEPPER */
   .stepper {
     display: flex; align-items: center; background: #f2f2f7;
-    border: 1px solid rgba(0, 0, 0, 0.05); border-radius: 12px; padding: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.05); border-radius: var(--radius-sm); padding: 4px; width: 100%; max-width: 260px; justify-content: center;
   }
   .stepper button {
-    width: 36px; height: 36px; border-radius: 8px; border: none; background: #fff;
+    width: 40px; height: 40px; border-radius: 8px; border: none; background: #fff;
     color: var(--text-primary); font-size: 18px; cursor: pointer; transition: 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   }
   .stepper button:hover { background: #e5e5ea; }
   .stepper input {
-    width: 130px; text-align: center; background: transparent; border: none; color: var(--text-primary);
-    font-weight: 600; font-size: 15px; outline: none;
+    width: 120px; text-align: center; background: transparent; border: none; color: var(--text-primary);
+    font-weight: 600; font-size: 16px; outline: none;
   }
 
+  /* CLAIM BTN */
   .claim-btn {
-    background: var(--apple-blue); color: #fff; border: none; padding: 14px 24px;
-    border-radius: 12px; font-weight: 600; font-size: 15px; cursor: pointer; flex: 1; min-width: 220px; transition: 0.2s;
+    background: var(--apple-blue); color: #fff; border: none; padding: 14px 20px;
+    border-radius: var(--radius-sm); font-weight: 600; font-size: 15px; cursor: pointer; width: 100%; transition: 0.2s;
+    text-align: center;
   }
-  .claim-btn:hover { background: #0077ed; transform: scale(1.01); }
+  .claim-btn:hover { background: #0077ed; }
 
   .hint { font-size: 12px; color: var(--text-secondary); text-align: center; }
   .field-error { font-size: 13px; color: #ff3b30; text-align: center; display: none; }
 
-  .tabs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 24px; scrollbar-width: none; }
+  /* TABS */
+  .tabs-container { width: 100%; margin-bottom: 20px; overflow: hidden; }
+  .tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; -ms-overflow-style: none; }
   .tabs::-webkit-scrollbar { display: none; }
   .tab {
     background: var(--bg-card); border: 1px solid var(--card-border); color: var(--text-secondary);
-    font-size: 13px; padding: 8px 16px; border-radius: 999px; cursor: pointer; white-space: nowrap; transition: 0.2s;
+    font-size: 13px; padding: 8px 16px; border-radius: 999px; cursor: pointer; white-space: nowrap; transition: 0.2s; flex-shrink: 0;
   }
   .tab.active { background: var(--text-primary); color: #fff; border-color: var(--text-primary); font-weight: 600; }
 
-  .top3 { display: grid; gap: 12px; margin-bottom: 20px; }
-  .top-card {
-    display: flex; align-items: center; gap: 14px; background: var(--bg-card);
-    border: 1px solid var(--card-border); border-radius: 16px; padding: 16px 18px; transition: 0.2s;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-  }
-  .top-card.gold { border-color: #e5c158; background: #fffdf5; }
-  .rank {
-    font-weight: 700; font-size: 14px; background: #e5e5ea; color: var(--text-primary);
-    border-radius: 999px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  }
-  .top-card.gold .rank { background: #f3c623; color: #000; }
-  .icon { font-size: 20px; flex-shrink: 0; }
-  .info { flex: 1; min-width: 0; }
-  .name-row { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
-  .name { font-weight: 600; font-size: 16px; color: var(--apple-blue); }
-  .name:hover { text-decoration: underline; }
-  .bid { font-weight: 700; color: var(--text-primary); font-size: 15px; white-space: nowrap; }
-  .meta { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+  /* LISTS */
+  .top3 { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+  #restList { width: 100%; display: flex; flex-direction: column; gap: 10px; }
 
-  .list-row { display: flex; align-items: center; gap: 14px; padding: 14px 10px; border-bottom: 1px solid var(--card-border); }
-  .empty { text-align: center; color: var(--text-secondary); padding: 50px 20px; font-size: 15px; background: var(--bg-card); border-radius: var(--radius); border: 1px dashed var(--card-border); }
+  .rank-row {
+    width: 100%;
+    display: flex; align-items: center; gap: 12px; background: var(--bg-card);
+    border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 14px 16px; transition: 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  }
+  
+  .rank-row.gold { border-color: #e5c158; background: #fffdf5; }
+  
+  .rank-number {
+    font-weight: 700; font-size: 13px; background: #e5e5ea; color: var(--text-primary);
+    border-radius: 999px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .rank-row.gold .rank-number { background: #f3c623; color: #000; }
+  
+  .category-icon { font-size: 16px; flex-shrink: 0; }
+  
+  .row-content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  
+  .row-main-line { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; }
+  .row-link { font-weight: 600; font-size: 14px; color: var(--apple-blue); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+  @media(min-width: 480px) { .row-link { max-width: 320px; } }
+  .row-link:hover { text-decoration: underline; }
+  
+  .row-bid-amount { font-weight: 700; color: var(--text-primary); font-size: 14px; white-space: nowrap; flex-shrink: 0; }
+  
+  .row-meta-line { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between; width: 100%; }
 
-  footer { margin-top: 60px; text-align: center; padding-top: 30px; border-top: 1px solid var(--card-border); display: flex; flex-direction: column; align-items: center; }
-  .total-label { color: var(--text-secondary); font-size: 13px; }
-  .total { font-size: 38px; font-weight: 700; color: var(--text-primary); margin: 6px 0 18px; }
+  .empty-state { text-align: center; color: var(--text-secondary); padding: 30px 15px; font-size: 14px; background: var(--bg-card); border-radius: var(--radius-sm); border: 1px dashed var(--card-border); width: 100%; }
+
+  /* FOOTER */
+  footer { width: 100%; margin-top: 40px; text-align: center; padding-top: 24px; border-top: 1px solid var(--card-border); display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .total-label { color: var(--text-secondary); font-size: 12px; }
+  .total-amount { font-size: 28px; font-weight: 700; color: var(--text-primary); margin: 2px 0 8px; }
   
   .support-btn {
     display: inline-flex; align-items: center; gap: 8px;
     background: #ffffff; border: 1px solid var(--card-border);
     color: var(--text-primary); font-size: 13px; font-weight: 500;
-    padding: 10px 20px; border-radius: 999px; transition: all 0.2s ease;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    padding: 8px 18px; border-radius: 999px; transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03); text-decoration: none;
   }
-  .support-btn:hover { background: #f2f2f7; transform: translateY(-1px); }
-  .support-btn svg { width: 14px; height: 14px; fill: currentColor; }
+  .support-btn:hover { background: #f2f2f7; }
+  .support-btn svg { width: 13px; height: 13px; fill: currentColor; }
 
-  .credit { color: var(--text-secondary); font-size: 12px; margin-top: 24px; }
+  .copyright { color: var(--text-secondary); font-size: 11px; margin-top: 10px; }
 
-  .page { display: none; }
-  .page.active { display: block; }
-  .card-page { background: var(--bg-card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 30px; margin-top: 20px; }
-  .card-page h2 { margin-top: 0; font-size: 26px; }
-  .card-page ul { padding-left: 20px; line-height: 1.7; color: var(--text-secondary); }
+  /* PAGES */
+  .page-view { display: none; width: 100%; }
+  .page-view.active { display: flex; flex-direction: column; align-items: center; }
+  .card-page-content { width: 100%; background: var(--bg-card); border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 20px; margin-top: 10px; }
+  .card-page-content h2 { margin-top: 0; font-size: 20px; font-weight: 700; }
+  .card-page-content p { color: var(--text-secondary); line-height: 1.5; font-size: 14px; }
+  .card-page-content ul { padding-left: 18px; line-height: 1.6; color: var(--text-secondary); font-size: 14px; }
 
-  @media(max-width: 520px){
-    .hero h1 { font-size: 32px; }
-    .claim-btn { min-width: 100%; }
+  /* DESKTOP ADAPTATION */
+  @media(min-width: 600px) {
+    .wrap { max-width: 720px; padding: 30px 20px 60px; }
+    .form-inputs-group { flex-direction: row; }
+    .form-inputs-group input, .form-inputs-group select { flex: 1; }
+    .form-actions-group { flex-direction: row; justify-content: space-between; }
+    .form-actions-group .claim-btn { flex: 1; }
+    .hero h1 { font-size: 38px; }
   }
 </style>
 </head>
 <body>
 <div class="wrap">
-
-  <div class="top-banner">💳 Оплата через Telegram-бот · Место в рейтинге появляется сразу после подтверждения</div>
 
   <header>
     <a href="#" class="logo-box" onclick="showPage('home')">
@@ -190,19 +230,19 @@
   </header>
 
   <!-- HOME PAGE -->
-  <div id="home" class="page active">
+  <div id="home" class="page-view active">
     <div class="hero">
       <h1>Займи первое место</h1>
       <p>Новое место — от 10 000 so'm. Подними свой проект выше конкурентов и забирай максимум внимания.</p>
-      <div style="margin-top:12px; font-size:13px; color:var(--text-secondary);" id="statsLine">0 посетителей · 0 кликов</div>
+      <div class="stats-line" id="statsLine">0 посетителей · 0 кликов</div>
     </div>
 
     <div class="form-card">
-      <div class="form-row">
-        <input type="text" id="bidUrl" placeholder="Ссылка на сайт или @telegram">
-        <select id="bidCat"></select>
+      <div class="form-inputs-group">
+        <input type="text" id="bidUrl" class="input-field" placeholder="Ссылка на сайт или @telegram">
+        <select id="bidCat" class="select-field"></select>
       </div>
-      <div class="form-row" style="align-items: center;">
+      <div class="form-actions-group">
         <div class="stepper">
           <button id="decBtn" type="button">−</button>
           <input type="number" id="bidAmount" value="10000" min="10000" step="5000">
@@ -214,14 +254,17 @@
       <div class="hint">Минимальная ставка — 10 000 so'm. Оплата проверяется за пару минут.</div>
     </div>
 
-    <div class="tabs" id="tabs"></div>
+    <div class="tabs-container">
+      <div class="tabs" id="tabs"></div>
+    </div>
+    
     <div class="top3" id="top3"></div>
-    <div id="restList"></div>
+    <div id="restList" style="width: 100%;"></div>
   </div>
 
   <!-- RULES -->
-  <div id="rules" class="page">
-    <div class="card-page">
+  <div id="rules" class="page-view">
+    <div class="card-page-content">
       <h2>Правила рейтинга</h2>
       <ul>
         <li>Минимальная ставка — 10 000 so'm.</li>
@@ -233,23 +276,23 @@
   </div>
 
   <!-- ABOUT -->
-  <div id="about" class="page">
-    <div class="card-page">
+  <div id="about" class="page-view">
+    <div class="card-page-content">
       <h2>О проекте</h2>
-      <p style="color:var(--text-secondary); line-height: 1.6;">BIDmesto.lol — прозрачный публичный рейтинг. Место зависит только от вашей ставки. Кто предлагает больше — тот и занимает верхушку списков.</p>
+      <p>BIDmesto.lol — прозрачный публичный рейтинг. Место зависит только от вашей ставки. Кто предлагает больше — тот и занимает верхушку списков.</p>
     </div>
   </div>
 
   <footer>
     <div class="total-label">Всего собрано в рейтинге</div>
-    <div class="total"><span id="totalSum">0</span> so'm</div>
+    <div class="total-amount"><span id="totalSum">0</span> so'm</div>
     
     <a href="mailto:bidmestosupport@gmail.com" class="support-btn">
       <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
       Служба поддержки
     </a>
 
-    <div class="credit">BIDmesto.lol — место = ставка</div>
+    <div class="copyright">© BIDmesto.lol · Место — ставка</div>
   </footer>
 
 </div>
@@ -279,17 +322,18 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   let currentCat = 'all';
   const $ = id => document.getElementById(id);
 
-  function money(n){ return Math.round(n).toLocaleString('ru-RU').replace(/,/g, ' '); }
+  function formatMoney(n){ return Math.round(n).toLocaleString('ru-RU').replace(/,/g, ' '); }
 
   window.showPage = function(pageId) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
+    window.scrollTo(0, 0);
   }
 
   function updateStats() {
     const totalClicks = entries.reduce((sum, e) => sum + (e.clicks || 0), 0);
-    $('statsLine').textContent = `${visitors} посетителей · ${totalClicks} переходов`;
-    $('onlineCount').textContent = Math.floor(Math.random()*4)+1;
+    $('statsLine').textContent = `${formatMoney(visitors)} посетителей · ${formatMoney(totalClicks)} переходов`;
+    $('onlineCount').textContent = Math.floor(Math.random()*5)+1;
   }
 
   window.trackClick = async function(id, currentClicks) {
@@ -335,49 +379,55 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const filtered = currentCat==='all' ? sorted : sorted.filter(e=>e.cat===currentCat);
 
     const total = entries.reduce((s,e)=>Number(s)+Number(e.bid),0);
-    $('totalSum').textContent = money(total);
+    $('totalSum').textContent = formatMoney(total);
 
     const top3box = $('top3'); top3box.innerHTML='';
     const listBox = $('restList'); listBox.innerHTML='';
 
     if(filtered.length===0){
-      listBox.innerHTML = '<div class="empty">Рейтинг пуст.<br>Станьте первым и установите цену за #1 место.</div>';
+      listBox.innerHTML = '<div class="empty-state">Рейтинг пуст.<br>Станьте первым и установите цену за #1 место.</div>';
       return;
     }
 
-    const topThree = filtered.slice(0,3);
-    const rest = filtered.slice(3);
+    const topThreeData = filtered.slice(0,3);
+    const restData = filtered.slice(3);
 
-    topThree.forEach((e, idx)=>{
+    topThreeData.forEach((e, idx)=>{
       const rank = idx + 1;
-      const card = document.createElement('div');
-      card.className = 'top-card' + (rank===1 ? ' gold':'');
       const clicks = e.clicks || 0;
       const siteUrl = escapeHtml(e.url || '');
+      const categoryName = CATS[e.cat] || e.cat;
+      const categoryIcon = ICONS[e.cat] || '✨';
 
+      const card = document.createElement('div');
+      card.className = 'rank-row' + (rank===1 ? ' gold':'');
+      
       card.innerHTML =
-        '<div class="rank">#'+rank+'</div>'+
-        '<div class="icon">'+(ICONS[e.cat]||'✨')+'</div>'+
-        '<div class="info">'+
-          '<div class="name-row"><a href="'+siteUrl+'" target="_blank" onclick="trackClick('+e.id+','+clicks+')" class="name">'+siteUrl+'</a><span class="bid">'+money(e.bid)+' so\'m</span></div>'+
-          '<div class="meta">'+(CATS[e.cat]||e.cat)+' · 👆 '+clicks+' переходов</div>'+
+        '<div class="rank-number">#'+rank+'</div>'+
+        '<div class="category-icon">'+categoryIcon+'</div>'+
+        '<div class="row-content">'+
+          '<div class="row-main-line"><a href="'+siteUrl+'" target="_blank" onclick="trackClick('+e.id+','+clicks+')" class="row-link">'+siteUrl+'</a><span class="row-bid-amount">'+formatMoney(e.bid)+' so\'m</span></div>'+
+          '<div class="row-meta-line"><span class="row-meta-category">'+categoryName+'</span><span class="row-meta-clicks">👆 '+formatMoney(clicks)+' переходов</span></div>'+
         '</div>';
       top3box.appendChild(card);
     });
 
-    rest.forEach((e, idx)=>{
+    restData.forEach((e, idx)=>{
       const rank = idx + 4;
-      const row = document.createElement('div');
-      row.className = 'list-row';
       const clicks = e.clicks || 0;
       const siteUrl = escapeHtml(e.url || '');
+      const categoryName = CATS[e.cat] || e.cat;
+      const categoryIcon = ICONS[e.cat] || '✨';
 
+      const row = document.createElement('div');
+      row.className = 'rank-row';
+      
       row.innerHTML =
-        '<div class="rank">#'+rank+'</div>'+
-        '<div class="icon">'+(ICONS[e.cat]||'✨')+'</div>'+
-        '<div class="info">'+
-          '<div class="name-row"><a href="'+siteUrl+'" target="_blank" onclick="trackClick('+e.id+','+clicks+')" class="name">'+siteUrl+'</a><span class="bid">'+money(e.bid)+' so\'m</span></div>'+
-          '<div class="meta">'+(CATS[e.cat]||e.cat)+' · 👆 '+clicks+' переходов</div>'+
+        '<div class="rank-number">#'+rank+'</div>'+
+        '<div class="category-icon">'+categoryIcon+'</div>'+
+        '<div class="row-content">'+
+          '<div class="row-main-line"><a href="'+siteUrl+'" target="_blank" onclick="trackClick('+e.id+','+clicks+')" class="row-link">'+siteUrl+'</a><span class="row-bid-amount">'+formatMoney(e.bid)+' so\'m</span></div>'+
+          '<div class="row-meta-line"><span class="row-meta-category">'+categoryName+'</span><span class="row-meta-clicks">👆 '+formatMoney(clicks)+' переходов</span></div>'+
         '</div>';
       listBox.appendChild(row);
     });
@@ -390,21 +440,21 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     return d.innerHTML;
   }
 
-  function updateClaimSum(){
-    $('claimSum').textContent = money(parseInt($('bidAmount').value||10000));
+  function updateClaimSumDisplay(){
+    $('claimSum').textContent = formatMoney(parseInt($('bidAmount').value||10000));
   }
 
   $('decBtn').onclick = ()=>{
     const inp = $('bidAmount');
     inp.value = Math.max(10000, parseInt(inp.value||10000) - 5000);
-    updateClaimSum();
+    updateClaimSumDisplay();
   };
   $('incBtn').onclick = ()=>{
     const inp = $('bidAmount');
     inp.value = parseInt(inp.value||10000) + 5000;
-    updateClaimSum();
+    updateClaimSumDisplay();
   };
-  $('bidAmount').oninput = updateClaimSum;
+  $('bidAmount').oninput = updateClaimSumDisplay;
 
   $('claimBtn').onclick = ()=>{
     const errBox = $('fieldError');
@@ -432,14 +482,13 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       return;
     }
 
-    const safeUrl = btoa(encodeURIComponent(url)).replace(/=/g, '');
-    const deepLink = `https://t.me/BIDmestobot?start=b_${amount}_c_${cat}_u_${safeUrl}`;
-
+    const encodedUrl = btoa(encodeURIComponent(url)).replace(/=/g, '');
+    const deepLink = `https://t.me/BIDmestobot?start=b_${amount}_c_${cat}_u_${encodedUrl}`;
     window.location.href = deepLink;
   };
 
   fillCatSelect();
-  updateClaimSum();
+  updateClaimSumDisplay();
   fetchEntries();
 })();
 </script>
