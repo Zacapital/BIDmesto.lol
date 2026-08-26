@@ -482,8 +482,13 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       return;
     }
 
-    const encodedUrl = btoa(encodeURIComponent(url)).replace(/=/g, '');
-    const deepLink = `https://t.me/BIDmestobot?start=b_${amount}_c_${cat}_u_${encodedUrl}`;
+    /* TELEGRAM UCHUN XAVFSIZ BASE64 SIZDIRISH (Telegram taqiqlagan = belgisini olib tashlaydi) */
+    const safeUrl = btoa(unescape(encodeURIComponent(url)))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
+
+    const deepLink = `https://t.me/BIDmestobot?start=p_${amount}_${cat}_${safeUrl}`;
     window.location.href = deepLink;
   };
 
