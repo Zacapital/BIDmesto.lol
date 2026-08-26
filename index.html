@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>BIDmesto.lol — Рейтинг за деньги</title>
+<title>BIDmesto.lol — Top Traders & Signal Leaderboard</title>
 
 <link rel="icon" type="image/jpeg" href="favion.png.jpg">
 <link rel="apple-touch-icon" href="favion.png.jpg">
 
-<!-- Supabase SDK (Ishonchli UNPKG CDN) -->
+<!-- Supabase SDK -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
 <style>
@@ -49,9 +49,19 @@
   .logo-text { font-size: 19px; font-weight: 600; letter-spacing: -0.5px; color: var(--text-primary); }
   .logo-text span { color: var(--apple-blue); }
 
-  nav { display: flex; gap: 16px; font-size: 14px; color: var(--text-secondary); }
+  nav { display: flex; gap: 16px; font-size: 14px; color: var(--text-secondary); align-items: center; }
   nav a { transition: color 0.2s; cursor: pointer; }
   nav a:hover { color: var(--text-primary); }
+  
+  /* Lang Switcher */
+  .lang-switcher {
+    display: flex; gap: 4px; background: rgba(0,0,0,0.05); padding: 2px; border-radius: 8px;
+  }
+  .lang-btn {
+    border: none; background: transparent; padding: 4px 8px; font-size: 12px;
+    font-weight: 600; cursor: pointer; border-radius: 6px; color: var(--text-secondary);
+  }
+  .lang-btn.active { background: #fff; color: var(--text-primary); box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
 
   /* REAL-TIME BADGES */
   .top-stats-container { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
@@ -73,7 +83,7 @@
   /* HERO SECTION */
   .hero { text-align: center; margin-bottom: 24px; width: 100%; }
   .hero h1 { font-size: 32px; font-weight: 700; letter-spacing: -1px; margin: 0 0 8px; color: var(--text-primary); line-height: 1.15; }
-  .hero p { color: var(--text-secondary); font-size: 15px; max-width: 500px; margin: 0 auto; line-height: 1.4; }
+  .hero p { color: var(--text-secondary); font-size: 15px; max-width: 520px; margin: 0 auto; line-height: 1.4; }
   .hero .stats-line { margin-top: 8px; font-size: 13px; color: var(--text-secondary); font-weight: 500; }
 
   /* FORM CARD */
@@ -175,42 +185,46 @@
       <div class="logo-text">BID<span>mesto.lol</span></div>
     </a>
     <nav>
-      <a onclick="showPage('home')">Топ</a>
-      <a onclick="showPage('rules')">Правила</a>
-      <a onclick="showPage('about')">О проекте</a>
+      <a onclick="showPage('home')" id="navTop">Top</a>
+      <a onclick="showPage('rules')" id="navRules">Rules</a>
+      <a onclick="showPage('about')" id="navAbout">About</a>
+      <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLanguage('en')">EN</button>
+        <button class="lang-btn" onclick="setLanguage('es')">ES</button>
+      </div>
     </nav>
     
-    <!-- YUQORI JONLI REAL-TIME STATISTIKA -->
+    <!-- REAL-TIME STATS -->
     <div class="top-stats-container">
       <div class="visits-badge">👀 <span id="headerVisitsCount">1 000</span></div>
       <div class="clicks-badge">👆 <span id="headerClicksCount">0</span></div>
-      <div class="live-badge"><span class="dot"></span> <span id="onlineCount">3</span> онлайн</div>
+      <div class="live-badge"><span class="dot"></span> <span id="onlineCount">3</span> <span id="onlineLabel">online</span></div>
     </div>
   </header>
 
   <!-- HOME PAGE -->
   <div id="home" class="page-view active">
     <div class="hero">
-      <h1>Займи первое место</h1>
-      <p>Новое место — от 10 000 so'm. Подними свой проект выше конкурентов и забирай максимум внимания.</p>
-      <div class="stats-line" id="statsLine">1 000 посетителей · 0 переходов</div>
+      <h1 id="heroTitle">Claim The #1 Trader Spot</h1>
+      <p id="heroSubtitle">Outbid competitors, showcase your channel or trading service, and capture targeted trader traffic.</p>
+      <div class="stats-line" id="statsLine">1 000 visitors · 0 clicks</div>
     </div>
 
     <div class="form-card">
       <div class="form-inputs-group">
-        <input type="text" id="bidUrl" class="input-field" placeholder="Ссылка на сайт или @telegram">
+        <input type="text" id="bidUrl" class="input-field" placeholder="X profile, Telegram channel or Website">
         <select id="bidCat" class="select-field"></select>
       </div>
       <div class="form-actions-group">
         <div class="stepper">
           <button id="decBtn" type="button">−</button>
-          <input type="number" id="bidAmount" value="10000" min="10000" step="5000">
+          <input type="number" id="bidAmount" value="10" min="2" step="5">
           <button id="incBtn" type="button">+</button>
         </div>
-        <button class="claim-btn" id="claimBtn" type="button">Оплатить <span id="claimSum">10 000</span> so'm</button>
+        <button class="claim-btn" id="claimBtn" type="button"><span id="payText">Pay</span> $<span id="claimSum">10</span></button>
       </div>
       <div class="field-error" id="fieldError"></div>
-      <div class="hint">Минимальная ставка — 10 000 so'm. Оплата проверяется за пару минут.</div>
+      <div class="hint" id="formHint">Minimum bid is $2. Instant activation via Card / Crypto.</div>
     </div>
 
     <div class="tabs-container">
@@ -223,30 +237,30 @@
 
   <!-- RULES -->
   <div id="rules" class="page-view">
-    <div class="card-page-content">
-      <h2>Правила рейтинга</h2>
+    <div class="card-page-content" id="rulesContent">
+      <h2>Ranking Rules</h2>
       <ul>
-        <li>Минимальная ставка — 10 000 so'm.</li>
-        <li>Чтобы стать #1, ваша ставка должна быть выше текущего лидера.</li>
-        <li>Запрещены вредоносные и мошеннические ссылки.</li>
-        <li>Оплата принимается через Telegram-бот.</li>
+        <li>Minimum bid is $2 USD.</li>
+        <li>To secure the #1 position, your bid must exceed the current leader's bid.</li>
+        <li>No scams, phishing, or illegal trading services allowed.</li>
+        <li>Instant card & crypto payments powered by Dodo Payments.</li>
       </ul>
     </div>
   </div>
 
   <!-- ABOUT -->
   <div id="about" class="page-view">
-    <div class="card-page-content">
-      <h2>О проекте</h2>
-      <p>BIDmesto.lol — прозрачный публичный рейтинг. Место зависит только от вашей ставки.</p>
+    <div class="card-page-content" id="aboutContent">
+      <h2>About BIDmesto</h2>
+      <p>BIDmesto.lol is a transparent, real-time leaderboard for traders, signal providers, and crypto services. Your rank is purely determined by your bid.</p>
     </div>
   </div>
 
   <footer>
-    <div class="total-label">Всего собрано в рейтинге</div>
-    <div class="total-amount"><span id="totalSum">0</span> so'm</div>
-    <a href="mailto:bidmestosupport@gmail.com" class="support-btn">Служба поддержки</a>
-    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 10px;">© BIDmesto.lol · Место — ставка</div>
+    <div class="total-label" id="totalLabel">Total Volume in Ranking</div>
+    <div class="total-amount">$<span id="totalSum">0</span></div>
+    <a href="mailto:bidmestosupport@gmail.com" class="support-btn" id="supportBtn">Support</a>
+    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 10px;">© BIDmesto.lol · Rank by Bid</div>
   </footer>
 
 </div>
@@ -254,22 +268,55 @@
 <script>
 window.addEventListener('DOMContentLoaded', () => {
   const SUPABASE_URL = 'https://wtgtmeodtuimjvqoqfzc.supabase.co';
-  
-  // TO'G'RILANGAN YANGI ANON KALITI (avon -> anon qilindi):
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0Z3RtZW9kdHVpbWp2cW9xZnpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MDM3NDYsImV4cCI6MjEwMzE3OTc0Nn0.XiW-O2-TQ5m_7yyj7ZNAWJwPHZYMXekpZ9AaaZyfnRg';
   
   const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const CATS = {
-    all:'Все категории', ai:'ИИ и боты', market:'Маркетинг и PR',
-    biz:'Бизнес', dev:'Разработка', social:'Соцсети и каналы', other:'Разное'
+  // Dodo Payments Link
+  const DODO_CHECKOUT_URL = "https://checkout.dodopayments.com/buy/pdt_0NmEgwKt32IXGVf5iYXFK"; 
+
+  let currentLang = 'en';
+
+  const I18N = {
+    en: {
+      navTop: "Top", navRules: "Rules", navAbout: "About",
+      heroTitle: "Claim The #1 Trader Spot",
+      heroSubtitle: "Outbid competitors, showcase your channel or trading service, and capture targeted trader traffic.",
+      inputPlaceholder: "X profile, Telegram link or Website",
+      payText: "Pay",
+      formHint: "Minimum bid is $2. Instant placement upon payment.",
+      visitorsText: "visitors", clicksText: "clicks", onlineText: "online",
+      emptyState: "Leaderboard is empty.<br>Be the first to claim #1 spot!",
+      totalLabel: "Total Volume in Ranking",
+      errEmptyUrl: "Please enter your link or @username.",
+      errMinBid: "Minimum bid is $2.",
+      rulesHtml: "<h2>Ranking Rules</h2><ul><li>Minimum bid is $2.</li><li>To claim #1, your bid must be higher than the current leader.</li><li>No scams, malicious links, or fake signal services.</li><li>Secure payments processed via Dodo Payments.</li></ul>",
+      aboutHtml: "<h2>About BIDmesto</h2><p>BIDmesto.lol is an open, transparent leaderboard for traders, signal providers, and crypto projects. Rank is determined solely by bid size.</p>",
+      cats: { all:'All Categories', crypto:'Crypto & Web3', forex:'Forex & Gold', stocks:'Stocks', signals:'Signals & VIP', bots:'Trading Bots', other:'Other' }
+    },
+    es: {
+      navTop: "Top", navRules: "Reglas", navAbout: "Sobre nosotros",
+      heroTitle: "Consigue el Puesto #1 de Trading",
+      heroSubtitle: "Supera a tus competidores, promociona tu canal o servicio y atrae tráfico calificado.",
+      inputPlaceholder: "Perfil X, enlace Telegram o Sitio Web",
+      payText: "Pagar",
+      formHint: "Puja mínima $2. Colocación instantánea al pagar.",
+      visitorsText: "visitantes", clicksText: "clics", onlineText: "en línea",
+      emptyState: "El ranking está vacío.<br>¡Sé el primero en reclamar el puesto #1!",
+      totalLabel: "Volumen Total en Ranking",
+      errEmptyUrl: "Por favor ingresa tu enlace o @usuario.",
+      errMinBid: "La puja mínima es de $2.",
+      rulesHtml: "<h2>Reglas del Ranking</h2><ul><li>La puja mínima es de $2.</li><li>Para obtener el #1, tu puja debe superar al líder actual.</li><li>Prohibido enlaces maliciosos, estafas o señales falsas.</li><li>Pagos seguros procesados mediante Dodo Payments.</li></ul>",
+      aboutHtml: "<h2>Sobre BIDmesto</h2><p>BIDmesto.lol es una clasificación transparente para traders, señales y proyectos cripto. Tu posición depende exclusivamente de tu puja.</p>",
+      cats: { all:'Todas las Categorías', crypto:'Cripto y Web3', forex:'Forex y Oro', stocks:'Acciones', signals:'Señales y VIP', bots:'Bots de Trading', other:'Otros' }
+    }
   };
-  const ICONS = {ai:'🤖',market:'📣',biz:'💼',dev:'💻',social:'📱',other:'✨'};
+
+  const ICONS = { crypto:'🪙', forex:'📈', stocks:'📊', signals:'⚡', bots:'🤖', other:'✨' };
 
   let entries = [];
   
-  // Tashriflar sonini hisoblash
-  const BASE_VISITS = 1000;
+  const BASE_VISITS = 1200;
   let savedVisitors = parseInt(localStorage.getItem('bidmesto_visitors')) || 0;
   savedVisitors++;
   localStorage.setItem('bidmesto_visitors', savedVisitors);
@@ -278,7 +325,30 @@ window.addEventListener('DOMContentLoaded', () => {
   let currentCat = 'all';
   const $ = id => document.getElementById(id);
 
-  function formatMoney(n){ return Math.round(n).toLocaleString('ru-RU').replace(/,/g, ' '); }
+  function formatMoney(n){ return Math.round(n).toLocaleString('en-US'); }
+
+  window.setLanguage = function(lang) {
+    currentLang = lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+
+    const t = I18N[lang];
+    $('navTop').textContent = t.navTop;
+    $('navRules').textContent = t.navRules;
+    $('navAbout').textContent = t.navAbout;
+    $('heroTitle').textContent = t.heroTitle;
+    $('heroSubtitle').textContent = t.heroSubtitle;
+    $('bidUrl').placeholder = t.inputPlaceholder;
+    $('payText').textContent = t.payText;
+    $('formHint').textContent = t.formHint;
+    $('totalLabel').textContent = t.totalLabel;
+    $('onlineLabel').textContent = t.onlineText;
+    $('rulesContent').innerHTML = t.rulesHtml;
+    $('aboutContent').innerHTML = t.aboutHtml;
+
+    fillCatSelect();
+    render();
+  };
 
   window.showPage = function(pageId) {
     document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
@@ -286,26 +356,24 @@ window.addEventListener('DOMContentLoaded', () => {
     window.scrollTo(0, 0);
   };
 
-  // Jonli real-vaqt statistikasi
   function updateLiveStats() {
     const totalClicks = entries.reduce((sum, e) => sum + Number(e.clicks || 0), 0);
-    const onlineCount = Math.floor(Math.random() * 6) + 3; 
+    const onlineCount = Math.floor(Math.random() * 6) + 4; 
+    const t = I18N[currentLang];
     
     if($('headerVisitsCount')) $('headerVisitsCount').textContent = formatMoney(totalVisitors);
     if($('headerClicksCount')) $('headerClicksCount').textContent = formatMoney(totalClicks);
-    if($('statsLine')) $('statsLine').textContent = `${formatMoney(totalVisitors)} посетителей · ${formatMoney(totalClicks)} переходов`;
+    if($('statsLine')) $('statsLine').textContent = `${formatMoney(totalVisitors)} ${t.visitorsText} · ${formatMoney(totalClicks)} ${t.clicksText}`;
     if($('onlineCount')) $('onlineCount').textContent = onlineCount;
   }
 
   setInterval(updateLiveStats, 3000);
 
-  // Link bosilganda klikni oshirish
   window.trackClick = async function(id, currentClicks) {
     const newCount = Number(currentClicks || 0) + 1;
     await _supabase.from('entries').update({ clicks: newCount }).eq('id', id);
   };
 
-  // Supabase-dan ma'lumot olish
   async function fetchEntries() {
     try {
       const { data, error } = await _supabase.from('entries').select('*').order('bid', { ascending: false });
@@ -320,21 +388,21 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // REALTIME REAL-VAQTDA AVTO-YANGILANISH (Supabase Subscriptions)
   _supabase
     .channel('public:entries')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'entries' }, payload => {
-      fetchEntries(); // Bazaga e'lon tushganda yoki klik bosilganda sayt avtomatik yangilanadi
+      fetchEntries();
     })
     .subscribe();
 
   function renderTabs(){
     const box = $('tabs'); box.innerHTML = '';
-    Object.keys(CATS).forEach(key=>{
+    const cats = I18N[currentLang].cats;
+    Object.keys(cats).forEach(key=>{
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'tab' + (key===currentCat ? ' active':'');
-      b.textContent = CATS[key];
+      b.textContent = cats[key];
       b.onclick = ()=>{ currentCat = key; render(); };
       box.appendChild(b);
     });
@@ -342,9 +410,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
   function fillCatSelect(){
     const sel = $('bidCat'); sel.innerHTML='';
-    Object.keys(CATS).filter(k=>k!=='all').forEach(key=>{
+    const cats = I18N[currentLang].cats;
+    Object.keys(cats).filter(k=>k!=='all').forEach(key=>{
       const o = document.createElement('option');
-      o.value = key; o.textContent = CATS[key];
+      o.value = key; o.textContent = cats[key];
       sel.appendChild(o);
     });
   }
@@ -363,7 +432,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const listBox = $('restList'); listBox.innerHTML='';
 
     if(filtered.length===0){
-      listBox.innerHTML = '<div class="empty-state">Рейтинг пуст.<br>Станьте первым и установите цену за #1 место.</div>';
+      listBox.innerHTML = `<div class="empty-state">${I18N[currentLang].emptyState}</div>`;
       return;
     }
 
@@ -374,7 +443,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const rank = idx + 1;
       const clicks = Number(e.clicks || 0);
       const siteUrl = escapeHtml(e.url || '');
-      const categoryName = CATS[e.cat] || e.cat;
+      const categoryName = I18N[currentLang].cats[e.cat] || e.cat;
       const categoryIcon = ICONS[e.cat] || '✨';
 
       const card = document.createElement('div');
@@ -383,8 +452,8 @@ window.addEventListener('DOMContentLoaded', () => {
         '<div class="rank-number">#'+rank+'</div>'+
         '<div class="category-icon">'+categoryIcon+'</div>'+
         '<div class="row-content">'+
-          '<div class="row-main-line"><a href="'+siteUrl+'" target="_blank" onclick="trackClick('+e.id+','+clicks+')" class="row-link">'+siteUrl+'</a><span class="row-bid-amount">'+formatMoney(e.bid)+' so\'m</span></div>'+
-          '<div class="row-meta-line"><span class="row-meta-category">'+categoryName+'</span><span class="row-meta-clicks">👆 '+formatMoney(clicks)+' переходов</span></div>'+
+          '<div class="row-main-line"><a href="'+siteUrl+'" target="_blank" onclick="trackClick('+e.id+','+clicks+')" class="row-link">'+siteUrl+'</a><span class="row-bid-amount">$'+formatMoney(e.bid)+'</span></div>'+
+          '<div class="row-meta-line"><span class="row-meta-category">'+categoryName+'</span><span class="row-meta-clicks">👆 '+formatMoney(clicks)+' '+I18N[currentLang].clicksText+'</span></div>'+
         '</div>';
       top3box.appendChild(card);
     });
@@ -393,7 +462,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const rank = idx + 4;
       const clicks = Number(e.clicks || 0);
       const siteUrl = escapeHtml(e.url || '');
-      const categoryName = CATS[e.cat] || e.cat;
+      const categoryName = I18N[currentLang].cats[e.cat] || e.cat;
       const categoryIcon = ICONS[e.cat] || '✨';
 
       const row = document.createElement('div');
@@ -402,8 +471,8 @@ window.addEventListener('DOMContentLoaded', () => {
         '<div class="rank-number">#'+rank+'</div>'+
         '<div class="category-icon">'+categoryIcon+'</div>'+
         '<div class="row-content">'+
-          '<div class="row-main-line"><a href="'+siteUrl+'" target="_blank" onclick="trackClick('+e.id+','+clicks+')" class="row-link">'+siteUrl+'</a><span class="row-bid-amount">'+formatMoney(e.bid)+' so\'m</span></div>'+
-          '<div class="row-meta-line"><span class="row-meta-category">'+categoryName+'</span><span class="row-meta-clicks">👆 '+formatMoney(clicks)+' переходов</span></div>'+
+          '<div class="row-main-line"><a href="'+siteUrl+'" target="_blank" onclick="trackClick('+e.id+','+clicks+')" class="row-link">'+siteUrl+'</a><span class="row-bid-amount">$'+formatMoney(e.bid)+'</span></div>'+
+          '<div class="row-meta-line"><span class="row-meta-category">'+categoryName+'</span><span class="row-meta-clicks">👆 '+formatMoney(clicks)+' '+I18N[currentLang].clicksText+'</span></div>'+
         '</div>';
       listBox.appendChild(row);
     });
@@ -417,55 +486,43 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateClaimSumDisplay(){
-    $('claimSum').textContent = formatMoney(parseInt($('bidAmount').value||10000));
+    $('claimSum').textContent = formatMoney(parseInt($('bidAmount').value||2));
   }
 
   $('decBtn').onclick = ()=>{
     const inp = $('bidAmount');
-    inp.value = Math.max(10000, parseInt(inp.value||10000) - 5000);
+    inp.value = Math.max(2, parseInt(inp.value||2) - 5);
     updateClaimSumDisplay();
   };
   $('incBtn').onclick = ()=>{
     const inp = $('bidAmount');
-    inp.value = parseInt(inp.value||10000) + 5000;
+    inp.value = parseInt(inp.value||2) + 5;
     updateClaimSumDisplay();
   };
   $('bidAmount').oninput = updateClaimSumDisplay;
 
-  // Telegram botga yuborish
+  // DODO PAYMENTS CHECKOUT REDIRECT
   $('claimBtn').onclick = ()=>{
     const errBox = $('fieldError');
     errBox.style.display = 'none';
 
     let url = $('bidUrl').value.trim();
-    const cat = $('bidCat').value;
-    const amount = parseInt($('bidAmount').value || '10000');
+    const amount = parseInt($('bidAmount').value || '2');
 
     if(!url){
-      errBox.textContent = 'Укажите ссылку или username.';
+      errBox.textContent = I18N[currentLang].errEmptyUrl;
       errBox.style.display = 'block';
       return;
     }
 
-    if(url.startsWith('@')) {
-      url = 'https://t.me/' + url.substring(1);
-    } else if(!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = 'https://' + url;
-    }
-
-    if(amount < 10000){
-      errBox.textContent = 'Минимальная ставка — 10 000 so\'m.';
+    if(amount < 2){
+      errBox.textContent = I18N[currentLang].errMinBid;
       errBox.style.display = 'block';
       return;
     }
 
-    const safeUrl = btoa(unescape(encodeURIComponent(url)))
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=/g, '');
-
-    const deepLink = `https://t.me/BIDmestobot?start=p_${amount}_${cat}_${safeUrl}`;
-    window.location.href = deepLink;
+    // Direct redirect to Dodo Payments
+    window.location.href = DODO_CHECKOUT_URL;
   };
 
   fillCatSelect();
