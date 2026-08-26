@@ -73,12 +73,25 @@
   nav a { transition: color 0.2s; cursor: pointer; }
   nav a:hover { color: var(--text-primary); }
 
+  /* TOP STATS BADGES */
+  .top-stats-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
   .live-badge {
-    display: flex; align-items: center; gap: 6px; font-size: 12px;
+    display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500;
     color: #28cd41; background: rgba(40, 205, 65, 0.12); padding: 5px 12px; border-radius: 999px;
   }
   .dot { width: 6px; height: 6px; border-radius: 50%; background: #28cd41; animation: pulse 1.5s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  .visits-badge {
+    display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500;
+    color: var(--apple-blue); background: rgba(0, 102, 204, 0.1); padding: 5px 12px; border-radius: 999px;
+  }
 
   /* HERO SECTION */
   .hero { text-align: center; margin-bottom: 24px; width: 100%; }
@@ -226,7 +239,12 @@
       <a onclick="showPage('rules')">Правила</a>
       <a onclick="showPage('about')">О проекте</a>
     </nav>
-    <div class="live-badge"><span class="dot"></span> <span id="onlineCount">1</span> онлайн</div>
+    
+    <!-- YUQORI STATISTIKA BLOKI -->
+    <div class="top-stats-container">
+      <div class="visits-badge">👀 <span id="headerVisitsCount">1 000</span></div>
+      <div class="live-badge"><span class="dot"></span> <span id="onlineCount">1</span> онлайн</div>
+    </div>
   </header>
 
   <!-- HOME PAGE -->
@@ -234,7 +252,7 @@
     <div class="hero">
       <h1>Займи первое место</h1>
       <p>Новое место — от 10 000 so'm. Подними свой проект выше конкурентов и забирай максимум внимания.</p>
-      <div class="stats-line" id="statsLine">0 посетителей · 0 кликов</div>
+      <div class="stats-line" id="statsLine">1 000 посетителей · 0 кликов</div>
     </div>
 
     <div class="form-card">
@@ -315,9 +333,14 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   const ICONS = {ai:'🤖',market:'📣',biz:'💼',dev:'💻',social:'📱',other:'✨'};
 
   let entries = [];
-  let visitors = parseInt(localStorage.getItem('bidmesto_visitors')) || 0;
-  visitors++;
-  localStorage.setItem('bidmesto_visitors', visitors);
+  
+  /* STATISTIKA 1000 TADAN BOSHLANADI */
+  let BASE_VISITS = 1000;
+  let savedVisitors = parseInt(localStorage.getItem('bidmesto_visitors')) || 0;
+  savedVisitors++;
+  localStorage.setItem('bidmesto_visitors', savedVisitors);
+  
+  let totalVisitors = BASE_VISITS + savedVisitors;
 
   let currentCat = 'all';
   const $ = id => document.getElementById(id);
@@ -332,8 +355,11 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   function updateStats() {
     const totalClicks = entries.reduce((sum, e) => sum + (e.clicks || 0), 0);
-    $('statsLine').textContent = `${formatMoney(visitors)} посетителей · ${formatMoney(totalClicks)} переходов`;
-    $('onlineCount').textContent = Math.floor(Math.random()*5)+1;
+    const onlineCount = Math.floor(Math.random() * 8) + 3; // 3-10 oralig'ida jonli online
+    
+    $('headerVisitsCount').textContent = formatMoney(totalVisitors);
+    $('statsLine').textContent = `${formatMoney(totalVisitors)} посетителей · ${formatMoney(totalClicks)} переходов`;
+    $('onlineCount').textContent = onlineCount;
   }
 
   window.trackClick = async function(id, currentClicks) {
@@ -482,7 +508,6 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       return;
     }
 
-    /* TELEGRAM UCHUN XAVFSIZ BASE64 SIZDIRISH (Telegram taqiqlagan = belgisini olib tashlaydi) */
     const safeUrl = btoa(unescape(encodeURIComponent(url)))
       .replace(/\+/g, '-')
       .replace(/\//g, '_')
