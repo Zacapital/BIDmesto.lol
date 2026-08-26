@@ -73,25 +73,30 @@
   nav a { transition: color 0.2s; cursor: pointer; }
   nav a:hover { color: var(--text-primary); }
 
-  /* TOP STATS BADGES */
+  /* TOP STATS BADGES (YUQORI KICHIK BLOKLAR) */
   .top-stats-container {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
   }
 
+  .visits-badge {
+    display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500;
+    color: var(--apple-blue); background: rgba(0, 102, 204, 0.1); padding: 5px 10px; border-radius: 999px;
+  }
+
+  .clicks-badge {
+    display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500;
+    color: #ff9500; background: rgba(255, 149, 0, 0.1); padding: 5px 10px; border-radius: 999px;
+  }
+
   .live-badge {
-    display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500;
-    color: #28cd41; background: rgba(40, 205, 65, 0.12); padding: 5px 12px; border-radius: 999px;
+    display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500;
+    color: #28cd41; background: rgba(40, 205, 65, 0.12); padding: 5px 10px; border-radius: 999px;
   }
   .dot { width: 6px; height: 6px; border-radius: 50%; background: #28cd41; animation: pulse 1.5s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-
-  .visits-badge {
-    display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500;
-    color: var(--apple-blue); background: rgba(0, 102, 204, 0.1); padding: 5px 12px; border-radius: 999px;
-  }
 
   /* HERO SECTION */
   .hero { text-align: center; margin-bottom: 24px; width: 100%; }
@@ -240,9 +245,10 @@
       <a onclick="showPage('about')">О проекте</a>
     </nav>
     
-    <!-- YUQORI STATISTIKA BLOKI -->
+    <!-- YUQORI KICHIK STATISTIKA BLOKLARI -->
     <div class="top-stats-container">
       <div class="visits-badge">👀 <span id="headerVisitsCount">1 000</span></div>
+      <div class="clicks-badge">👆 <span id="headerClicksCount">0</span></div>
       <div class="live-badge"><span class="dot"></span> <span id="onlineCount">1</span> онлайн</div>
     </div>
   </header>
@@ -317,7 +323,7 @@
 
 <script>
 const SUPABASE_URL = 'https://wtgtmeodtuimjvqoqfzc.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0Z3RtZW9kdHVpbWp2cW9xZnpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MDM3NDYsImV4cCI6MjEwMzE3OTc0Nn0.XiW-O2-TQ5m_7yyj7ZNAWJwPHZYMXekpZ9AaaZyfnRg';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0Z3RtZW9kdHVpbWp2cW9xZnpjIiwicm9sZSI6ImF2b24iLCJpYXQiOjE3ODc2MDM3NDYsImV4cCI6MjEwMzE3OTc0Nn0.XiW-O2-TQ5m_7yyj7ZNAWJwPHZYMXekpZ9AaaZyfnRg';
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 (function(){
@@ -334,8 +340,8 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   let entries = [];
   
-  /* STATISTIKA 1000 TADAN BOSHLANADI */
-  let BASE_VISITS = 1000;
+  /* STATISTIKA 1 000 TADAN BOSHLANADI */
+  const BASE_VISITS = 1000;
   let savedVisitors = parseInt(localStorage.getItem('bidmesto_visitors')) || 0;
   savedVisitors++;
   localStorage.setItem('bidmesto_visitors', savedVisitors);
@@ -355,9 +361,10 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   function updateStats() {
     const totalClicks = entries.reduce((sum, e) => sum + (e.clicks || 0), 0);
-    const onlineCount = Math.floor(Math.random() * 8) + 3; // 3-10 oralig'ida jonli online
+    const onlineCount = Math.floor(Math.random() * 6) + 3; // 3-8 oralig'ida online
     
     $('headerVisitsCount').textContent = formatMoney(totalVisitors);
+    $('headerClicksCount').textContent = formatMoney(totalClicks);
     $('statsLine').textContent = `${formatMoney(totalVisitors)} посетителей · ${formatMoney(totalClicks)} переходов`;
     $('onlineCount').textContent = onlineCount;
   }
@@ -508,6 +515,7 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       return;
     }
 
+    /* TELEGRAM UCHUN XAVFSIZ BASE64 SIZDIRISH */
     const safeUrl = btoa(unescape(encodeURIComponent(url)))
       .replace(/\+/g, '-')
       .replace(/\//g, '_')
