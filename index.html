@@ -272,8 +272,8 @@ window.addEventListener('DOMContentLoaded', () => {
   
   const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // Dodo Payments Link
-  const DODO_CHECKOUT_URL = "https://checkout.dodopayments.com/buy/pdt_0NmEgwKt32IXGVf5iYXFK"; 
+  // Dodo Payments Base Checkout URL (Product ID: pdt_0NmEgwKt32IXGVf5iYXFK)
+  const DODO_BASE_CHECKOUT_URL = "https://checkout.dodopayments.com/buy/pdt_0NmEgwKt32IXGVf5iYXFK"; 
 
   let currentLang = 'en';
 
@@ -501,13 +501,14 @@ window.addEventListener('DOMContentLoaded', () => {
   };
   $('bidAmount').oninput = updateClaimSumDisplay;
 
-  // DODO PAYMENTS CHECKOUT REDIRECT
+  // DODO PAYMENTS CHECKOUT REDIRECT (UPDATED)
   $('claimBtn').onclick = ()=>{
     const errBox = $('fieldError');
     errBox.style.display = 'none';
 
     let url = $('bidUrl').value.trim();
     const amount = parseInt($('bidAmount').value || '2');
+    const category = $('bidCat').value;
 
     if(!url){
       errBox.textContent = I18N[currentLang].errEmptyUrl;
@@ -521,8 +522,10 @@ window.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Direct redirect to Dodo Payments
-    window.location.href = DODO_CHECKOUT_URL;
+    // Dynamic Checkout URL generation with amount and metadata
+    const checkoutUrl = `${DODO_BASE_CHECKOUT_URL}?quantity=1&amount=${amount * 100}&metadata_url=${encodeURIComponent(url)}&metadata_category=${encodeURIComponent(category)}`;
+    
+    window.location.href = checkoutUrl;
   };
 
   fillCatSelect();
