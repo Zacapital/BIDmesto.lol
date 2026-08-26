@@ -26,43 +26,24 @@
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   
   html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    overflow-x: hidden;
+    margin: 0; padding: 0; width: 100%; overflow-x: hidden;
   }
 
   body {
-    background-color: var(--bg-page);
-    color: var(--text-primary);
-    font-family: var(--font);
-    -webkit-font-smoothing: antialiased;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background-color: var(--bg-page); color: var(--text-primary);
+    font-family: var(--font); -webkit-font-smoothing: antialiased;
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center;
   }
 
   .wrap {
-    width: 100%;
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 20px 16px 50px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    width: 100%; max-width: 680px; margin: 0 auto;
+    padding: 20px 16px 50px; display: flex; flex-direction: column; align-items: center;
   }
 
   /* HEADER */
   header {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-    padding: 10px 0;
-    flex-wrap: wrap;
-    gap: 12px;
+    width: 100%; display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 24px; padding: 10px 0; flex-wrap: wrap; gap: 12px;
   }
   .logo-box { display: flex; align-items: center; gap: 10px; text-decoration: none; }
   .logo-img { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; }
@@ -73,24 +54,16 @@
   nav a { transition: color 0.2s; cursor: pointer; }
   nav a:hover { color: var(--text-primary); }
 
-  /* TOP STATS BADGES (YUQORI KICHIK BLOKLAR) */
-  .top-stats-container {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
+  /* TOP STATS BADGES */
+  .top-stats-container { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .visits-badge {
     display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500;
     color: var(--apple-blue); background: rgba(0, 102, 204, 0.1); padding: 5px 10px; border-radius: 999px;
   }
-
   .clicks-badge {
     display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500;
     color: #ff9500; background: rgba(255, 149, 0, 0.1); padding: 5px 10px; border-radius: 999px;
   }
-
   .live-badge {
     display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500;
     color: #28cd41; background: rgba(40, 205, 65, 0.12); padding: 5px 10px; border-radius: 999px;
@@ -100,22 +73,16 @@
 
   /* HERO SECTION */
   .hero { text-align: center; margin-bottom: 24px; width: 100%; }
-  .hero h1 {
-    font-size: 32px; font-weight: 700; letter-spacing: -1px; margin: 0 0 8px;
-    color: var(--text-primary); line-height: 1.15;
-  }
+  .hero h1 { font-size: 32px; font-weight: 700; letter-spacing: -1px; margin: 0 0 8px; color: var(--text-primary); line-height: 1.15; }
   .hero p { color: var(--text-secondary); font-size: 15px; max-width: 500px; margin: 0 auto; line-height: 1.4; }
   .hero .stats-line { margin-top: 8px; font-size: 13px; color: var(--text-secondary); }
 
   /* FORM CARD */
   .form-card {
-    width: 100%;
-    background: var(--bg-card); border: 1px solid var(--card-border);
+    width: 100%; background: var(--bg-card); border: 1px solid var(--card-border);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); border-radius: var(--radius); padding: 20px;
-    margin-bottom: 24px; display: flex; flex-direction: column; gap: 14px;
-    align-items: center;
+    margin-bottom: 24px; display: flex; flex-direction: column; gap: 14px; align-items: center;
   }
-  
   .form-inputs-group { width: 100%; display: flex; flex-direction: column; gap: 10px; }
   .form-actions-group { width: 100%; display: flex; flex-direction: column; gap: 12px; align-items: center; }
 
@@ -125,35 +92,28 @@
   }
   .input-field:focus, .select-field:focus { border-color: var(--apple-blue); background: #fff; }
   
-  /* STEPPER */
   .stepper {
-    display: flex; align-items: center; background: #f2f2f7;
-    border: 1px solid rgba(0, 0, 0, 0.05); border-radius: var(--radius-sm); padding: 4px; width: 100%; max-width: 260px; justify-content: center;
+    display: flex; align-items: center; background: #f2f2f7; border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: var(--radius-sm); padding: 4px; width: 100%; max-width: 260px; justify-content: center;
   }
   .stepper button {
     width: 40px; height: 40px; border-radius: 8px; border: none; background: #fff;
     color: var(--text-primary); font-size: 18px; cursor: pointer; transition: 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   }
   .stepper button:hover { background: #e5e5ea; }
-  .stepper input {
-    width: 120px; text-align: center; background: transparent; border: none; color: var(--text-primary);
-    font-weight: 600; font-size: 16px; outline: none;
-  }
+  .stepper input { width: 120px; text-align: center; background: transparent; border: none; color: var(--text-primary); font-weight: 600; font-size: 16px; outline: none; }
 
-  /* CLAIM BTN */
   .claim-btn {
     background: var(--apple-blue); color: #fff; border: none; padding: 14px 20px;
-    border-radius: var(--radius-sm); font-weight: 600; font-size: 15px; cursor: pointer; width: 100%; transition: 0.2s;
-    text-align: center;
+    border-radius: var(--radius-sm); font-weight: 600; font-size: 15px; cursor: pointer; width: 100%; transition: 0.2s; text-align: center;
   }
   .claim-btn:hover { background: #0077ed; }
-
   .hint { font-size: 12px; color: var(--text-secondary); text-align: center; }
   .field-error { font-size: 13px; color: #ff3b30; text-align: center; display: none; }
 
-  /* TABS */
+  /* TABS & LISTS */
   .tabs-container { width: 100%; margin-bottom: 20px; overflow: hidden; }
-  .tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; -ms-overflow-style: none; }
+  .tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
   .tabs::-webkit-scrollbar { display: none; }
   .tab {
     background: var(--bg-card); border: 1px solid var(--card-border); color: var(--text-secondary);
@@ -161,73 +121,49 @@
   }
   .tab.active { background: var(--text-primary); color: #fff; border-color: var(--text-primary); font-weight: 600; }
 
-  /* LISTS */
   .top3 { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
   #restList { width: 100%; display: flex; flex-direction: column; gap: 10px; }
 
   .rank-row {
-    width: 100%;
-    display: flex; align-items: center; gap: 12px; background: var(--bg-card);
-    border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 14px 16px; transition: 0.2s;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    width: 100%; display: flex; align-items: center; gap: 12px; background: var(--bg-card);
+    border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 14px 16px; transition: 0.2s; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
   }
-  
   .rank-row.gold { border-color: #e5c158; background: #fffdf5; }
-  
   .rank-number {
     font-weight: 700; font-size: 13px; background: #e5e5ea; color: var(--text-primary);
     border-radius: 999px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
   .rank-row.gold .rank-number { background: #f3c623; color: #000; }
-  
   .category-icon { font-size: 16px; flex-shrink: 0; }
-  
   .row-content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-  
   .row-main-line { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; }
-  .row-link { font-weight: 600; font-size: 14px; color: var(--apple-blue); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+  .row-link { font-weight: 600; font-size: 14px; color: var(--apple-blue); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; text-decoration: none; }
   @media(min-width: 480px) { .row-link { max-width: 320px; } }
   .row-link:hover { text-decoration: underline; }
-  
   .row-bid-amount { font-weight: 700; color: var(--text-primary); font-size: 14px; white-space: nowrap; flex-shrink: 0; }
-  
   .row-meta-line { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between; width: 100%; }
 
   .empty-state { text-align: center; color: var(--text-secondary); padding: 30px 15px; font-size: 14px; background: var(--bg-card); border-radius: var(--radius-sm); border: 1px dashed var(--card-border); width: 100%; }
 
-  /* FOOTER */
   footer { width: 100%; margin-top: 40px; text-align: center; padding-top: 24px; border-top: 1px solid var(--card-border); display: flex; flex-direction: column; align-items: center; gap: 10px; }
   .total-label { color: var(--text-secondary); font-size: 12px; }
   .total-amount { font-size: 28px; font-weight: 700; color: var(--text-primary); margin: 2px 0 8px; }
   
   .support-btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: #ffffff; border: 1px solid var(--card-border);
-    color: var(--text-primary); font-size: 13px; font-weight: 500;
-    padding: 8px 18px; border-radius: 999px; transition: all 0.2s ease;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.03); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px; background: #ffffff; border: 1px solid var(--card-border);
+    color: var(--text-primary); font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: 999px; text-decoration: none;
   }
-  .support-btn:hover { background: #f2f2f7; }
-  .support-btn svg { width: 13px; height: 13px; fill: currentColor; }
 
-  .copyright { color: var(--text-secondary); font-size: 11px; margin-top: 10px; }
-
-  /* PAGES */
   .page-view { display: none; width: 100%; }
   .page-view.active { display: flex; flex-direction: column; align-items: center; }
   .card-page-content { width: 100%; background: var(--bg-card); border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 20px; margin-top: 10px; }
-  .card-page-content h2 { margin-top: 0; font-size: 20px; font-weight: 700; }
-  .card-page-content p { color: var(--text-secondary); line-height: 1.5; font-size: 14px; }
-  .card-page-content ul { padding-left: 18px; line-height: 1.6; color: var(--text-secondary); font-size: 14px; }
 
-  /* DESKTOP ADAPTATION */
   @media(min-width: 600px) {
     .wrap { max-width: 720px; padding: 30px 20px 60px; }
     .form-inputs-group { flex-direction: row; }
     .form-inputs-group input, .form-inputs-group select { flex: 1; }
     .form-actions-group { flex-direction: row; justify-content: space-between; }
     .form-actions-group .claim-btn { flex: 1; }
-    .hero h1 { font-size: 38px; }
   }
 </style>
 </head>
@@ -245,11 +181,11 @@
       <a onclick="showPage('about')">О проекте</a>
     </nav>
     
-    <!-- YUQORI KICHIK STATISTIKA BLOKLARI -->
+    <!-- YUQORI JONLI STATISTIKA BLOKI -->
     <div class="top-stats-container">
       <div class="visits-badge">👀 <span id="headerVisitsCount">1 000</span></div>
       <div class="clicks-badge">👆 <span id="headerClicksCount">0</span></div>
-      <div class="live-badge"><span class="dot"></span> <span id="onlineCount">1</span> онлайн</div>
+      <div class="live-badge"><span class="dot"></span> <span id="onlineCount">3</span> онлайн</div>
     </div>
   </header>
 
@@ -258,7 +194,7 @@
     <div class="hero">
       <h1>Займи первое место</h1>
       <p>Новое место — от 10 000 so'm. Подними свой проект выше конкурентов и забирай максимум внимания.</p>
-      <div class="stats-line" id="statsLine">1 000 посетителей · 0 кликов</div>
+      <div class="stats-line" id="statsLine">1 000 посетителей · 0 переходов</div>
     </div>
 
     <div class="form-card">
@@ -294,7 +230,7 @@
         <li>Минимальная ставка — 10 000 so'm.</li>
         <li>Чтобы стать #1, ваша ставка должна быть выше текущего лидера.</li>
         <li>Запрещены вредоносные и мошеннические ссылки.</li>
-        <li>Оплата принимается через Telegram-бот по картам Uzcard, Visa и Mastercard.</li>
+        <li>Оплата принимается через Telegram-бот.</li>
       </ul>
     </div>
   </div>
@@ -303,20 +239,15 @@
   <div id="about" class="page-view">
     <div class="card-page-content">
       <h2>О проекте</h2>
-      <p>BIDmesto.lol — прозрачный публичный рейтинг. Место зависит только от вашей ставки. Кто предлагает больше — тот и занимает верхушку списков.</p>
+      <p>BIDmesto.lol — прозрачный публичный рейтинг. Место зависит только от вашей ставки.</p>
     </div>
   </div>
 
   <footer>
     <div class="total-label">Всего собрано в рейтинге</div>
     <div class="total-amount"><span id="totalSum">0</span> so'm</div>
-    
-    <a href="mailto:bidmestosupport@gmail.com" class="support-btn">
-      <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-      Служба поддержки
-    </a>
-
-    <div class="copyright">© BIDmesto.lol · Место — ставка</div>
+    <a href="mailto:bidmestosupport@gmail.com" class="support-btn">Служба поддержки</a>
+    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 10px;">© BIDmesto.lol · Место — ставка</div>
   </footer>
 
 </div>
@@ -328,26 +259,20 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 (function(){
   const CATS = {
-    all:'Все категории',
-    ai:'ИИ и боты',
-    market:'Маркетинг и PR',
-    biz:'Бизнес',
-    dev:'Разработка',
-    social:'Соцсети и каналы',
-    other:'Разное'
+    all:'Все категории', ai:'ИИ и боты', market:'Маркетинг и PR',
+    biz:'Бизнес', dev:'Разработка', social:'Соцсети и каналы', other:'Разное'
   };
   const ICONS = {ai:'🤖',market:'📣',biz:'💼',dev:'💻',social:'📱',other:'✨'};
 
   let entries = [];
   
-  /* STATISTIKA 1 000 TADAN BOSHLANADI */
+  // STATISTIKA HISOBI
   const BASE_VISITS = 1000;
   let savedVisitors = parseInt(localStorage.getItem('bidmesto_visitors')) || 0;
   savedVisitors++;
   localStorage.setItem('bidmesto_visitors', savedVisitors);
   
   let totalVisitors = BASE_VISITS + savedVisitors;
-
   let currentCat = 'all';
   const $ = id => document.getElementById(id);
 
@@ -359,9 +284,11 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     window.scrollTo(0, 0);
   }
 
-  function updateStats() {
+  // JONLI REAL-TIME STATISTIKA FUNKSIYASI
+  function updateLiveStats() {
     const totalClicks = entries.reduce((sum, e) => sum + (e.clicks || 0), 0);
-    const onlineCount = Math.floor(Math.random() * 6) + 3; // 3-8 oralig'ida online
+    // Real-vaqt ko'rinish berish uchun tasodifiy onlayn soni (3 va 9 oralig'ida)
+    const onlineCount = Math.floor(Math.random() * 7) + 3;
     
     $('headerVisitsCount').textContent = formatMoney(totalVisitors);
     $('headerClicksCount').textContent = formatMoney(totalClicks);
@@ -369,17 +296,27 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     $('onlineCount').textContent = onlineCount;
   }
 
+  // Har 4 soniyada onlayn hisoblagichni jonli yangilab turish
+  setInterval(updateLiveStats, 4000);
+
   window.trackClick = async function(id, currentClicks) {
     const newCount = (currentClicks || 0) + 1;
     await _supabase.from('entries').update({ clicks: newCount }).eq('id', id);
     fetchEntries();
   };
 
+  // REKLAMALARNI BAZADAN OLISH
   async function fetchEntries() {
-    const { data, error } = await _supabase.from('entries').select('*').order('bid', { ascending: false });
-    if (!error && data) {
-      entries = data;
-      render();
+    try {
+      const { data, error } = await _supabase.from('entries').select('*').order('bid', { ascending: false });
+      if (!error && data) {
+        entries = data;
+        render();
+      } else {
+        console.error("Supabase xatosi:", error);
+      }
+    } catch (err) {
+      console.error("Ulanishda xato:", err);
     }
   }
 
@@ -406,7 +343,7 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   function render(){
     renderTabs();
-    updateStats();
+    updateLiveStats();
 
     const sorted = [...entries].sort((a,b)=>b.bid-a.bid);
     const filtered = currentCat==='all' ? sorted : sorted.filter(e=>e.cat===currentCat);
@@ -434,7 +371,6 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
       const card = document.createElement('div');
       card.className = 'rank-row' + (rank===1 ? ' gold':'');
-      
       card.innerHTML =
         '<div class="rank-number">#'+rank+'</div>'+
         '<div class="category-icon">'+categoryIcon+'</div>'+
@@ -454,7 +390,6 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
       const row = document.createElement('div');
       row.className = 'rank-row';
-      
       row.innerHTML =
         '<div class="rank-number">#'+rank+'</div>'+
         '<div class="category-icon">'+categoryIcon+'</div>'+
@@ -515,7 +450,6 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       return;
     }
 
-    /* TELEGRAM UCHUN XAVFSIZ BASE64 SIZDIRISH */
     const safeUrl = btoa(unescape(encodeURIComponent(url)))
       .replace(/\+/g, '-')
       .replace(/\//g, '_')
