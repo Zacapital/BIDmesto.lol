@@ -117,6 +117,7 @@
     border-radius: var(--radius-sm); font-weight: 600; font-size: 15px; cursor: pointer; width: 100%; transition: 0.2s; text-align: center;
   }
   .claim-btn:hover { background: #0077ed; }
+  .claim-btn:disabled { opacity: 0.6; cursor: not-allowed; }
   .hint { font-size: 12px; color: var(--text-secondary); text-align: center; }
   .field-error { font-size: 13px; color: #ff3b30; text-align: center; display: none; }
 
@@ -271,9 +272,6 @@ window.addEventListener('DOMContentLoaded', () => {
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0Z3RtZW9kdHVpbWp2cW9xZnpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MDM3NDYsImV4cCI6MjEwMzE3OTc0Nn0.XiW-O2-TQ5m_7yyj7ZNAWJwPHZYMXekpZ9AaaZyfnRg';
   
   const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-  // Dodo Payments Base Checkout URL (Product ID: pdt_0NmEgwKt32IXGVf5iYXFK)
-  const DODO_BASE_CHECKOUT_URL = "https://checkout.dodopayments.com/buy/pdt_0NmEgwKt32IXGVf5iYXFK"; 
 
   let currentLang = 'en';
 
@@ -501,9 +499,10 @@ window.addEventListener('DOMContentLoaded', () => {
   };
   $('bidAmount').oninput = updateClaimSumDisplay;
 
-  // DODO PAYMENTS CHECKOUT REDIRECT (UPDATED)
-  $('claimBtn').onclick = ()=>{
+  // DYNAMIC CHECKOUT VIA VERCEL BACKEND API
+  $('claimBtn').onclick = async () => {
     const errBox = $('fieldError');
+    const claimBtn = $('claimBtn');
     errBox.style.display = 'none';
 
     let url = $('bidUrl').value.trim();
@@ -522,10 +521,35 @@ window.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Dynamic Checkout URL generation with amount and metadata
-    const checkoutUrl = `${DODO_BASE_CHECKOUT_URL}?quantity=1&amount=${amount * 100}&metadata_url=${encodeURIComponent(url)}&metadata_category=${encodeURIComponent(category)}`;
-    
-    window.location.href = checkoutUrl;
+    try {
+      claimBtn.disabled = true;
+      claimBtn.innerText = 'Loading...';
+
+      // Vercel backend API'ga so'rov yuborish
+      const response = await fetch('https://bidmesto-backend.vercel.app/api/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount, url, category })
+      });
+
+      const data = await response.json();
+
+      if (data.checkout_url) {
+        // Dodo Payments bergan xavfsiz va dinamik havolaga o'tish
+        window.location.href = data.checkout_url;
+      } else {
+        errBox.textContent = data.error || "To'lov havolasini yaratishda xatolik bo'ldi.";
+        errBox.style.display = 'block';
+        claimBtn.disabled = false;
+        claimBtn.innerHTML = `<span id="payText">${I18N[currentLang].payText}</span> $<span id="claimSum">${amount}</span>`;
+      }
+    } catch (err) {
+      console.error("Payment API error:", err);
+      errBox.textContent = "Server bilan bog'lanib bo'lmadi.";
+      errBox.style.display = 'block';
+      claimBtn.disabled = false;
+      claimBtn.innerHTML = `<span id="payText">${I18N[currentLang].payText}</span> $<span id="claimSum">${amount}</span>`;
+    }
   };
 
   fillCatSelect();
