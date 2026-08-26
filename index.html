@@ -8,8 +8,8 @@
 <link rel="icon" type="image/jpeg" href="favion.png.jpg">
 <link rel="apple-touch-icon" href="favion.png.jpg">
 
-<!-- Supabase SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Supabase SDK (Ishonchli UNPKG CDN) -->
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
 <style>
   :root {
@@ -53,7 +53,7 @@
   nav a { transition: color 0.2s; cursor: pointer; }
   nav a:hover { color: var(--text-primary); }
 
-  /* TOP STATS BADGES (YUKORI REAL-TIME BLOKLAR) */
+  /* REAL-TIME BADGES */
   .top-stats-container { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .visits-badge {
     display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600;
@@ -266,7 +266,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   let entries = [];
   
-  // TASHRIFLAR HISOB-KITOBI
+  // Tashriflar sonini hisoblash
   const BASE_VISITS = 1000;
   let savedVisitors = parseInt(localStorage.getItem('bidmesto_visitors')) || 0;
   savedVisitors++;
@@ -282,12 +282,11 @@ window.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
     window.scrollTo(0, 0);
-  }
+  };
 
-  // JONLI REAL-TIME STATISTIKA
+  // Jonli real-vaqt statistikasi
   function updateLiveStats() {
     const totalClicks = entries.reduce((sum, e) => sum + Number(e.clicks || 0), 0);
-    // Real-vaqt ko'rinishi berish uchun (3-8 oralig'ida avtomatik almashib turadi)
     const onlineCount = Math.floor(Math.random() * 6) + 3; 
     
     if($('headerVisitsCount')) $('headerVisitsCount').textContent = formatMoney(totalVisitors);
@@ -296,29 +295,36 @@ window.addEventListener('DOMContentLoaded', () => {
     if($('onlineCount')) $('onlineCount').textContent = onlineCount;
   }
 
-  // HAR 3 SONIYADA REAL VAQTDA YANGILASH
   setInterval(updateLiveStats, 3000);
 
+  // Link bosilganda klikni oshirish
   window.trackClick = async function(id, currentClicks) {
     const newCount = Number(currentClicks || 0) + 1;
     await _supabase.from('entries').update({ clicks: newCount }).eq('id', id);
-    fetchEntries();
   };
 
-  // REKLAMALARNI BAZADAN OLISH
+  // Supabase-dan ma'lumot olish
   async function fetchEntries() {
     try {
       const { data, error } = await _supabase.from('entries').select('*').order('bid', { ascending: false });
       if (error) {
-        console.error("Supabase xatosi:", error.message);
+        console.error("Supabase Error:", error.message);
       } else if (data) {
         entries = data;
         render();
       }
     } catch (err) {
-      console.error("Ulanish xatosi:", err);
+      console.error("Fetch Exception:", err);
     }
   }
+
+  // REALTIME REAL-VAQTDA AVTO-YANGILANISH (Supabase Subscriptions)
+  _supabase
+    .channel('public:entries')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'entries' }, payload => {
+      fetchEntries(); // Bazaga e'lon tushganda yoki klik bosilganda sayt avtomatik yangilanadi
+    })
+    .subscribe();
 
   function renderTabs(){
     const box = $('tabs'); box.innerHTML = '';
@@ -424,6 +430,7 @@ window.addEventListener('DOMContentLoaded', () => {
   };
   $('bidAmount').oninput = updateClaimSumDisplay;
 
+  // Telegram botga yuborish
   $('claimBtn').onclick = ()=>{
     const errBox = $('fieldError');
     errBox.style.display = 'none';
