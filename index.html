@@ -290,7 +290,7 @@ window.addEventListener('DOMContentLoaded', () => {
       errMinBid: "Minimum bid is $2.",
       rulesHtml: "<h2>Ranking Rules</h2><ul><li>Minimum bid is $2.</li><li>To claim #1, your bid must be higher than the current leader.</li><li>No scams, malicious links, or fake signal services.</li><li>Secure payments processed via Dodo Payments.</li></ul>",
       aboutHtml: "<h2>About BIDmesto</h2><p>BIDmesto.lol is an open, transparent leaderboard for traders, signal providers, and crypto projects. Rank is determined solely by bid size.</p>",
-      cats: { all:'All Categories', crypto:'Crypto & Web3', forex:'Forex & Gold', stocks:'Stocks', signals:'Signals & VIP', bots:'Trading Bots', other:'Other' }
+      cats: { all:'All Categories', twitter:'X (ex-Twitter)', education:'Education', youtube:'YouTube', discord:'Discord', prop:'Prop', telegram:'Telegram', website:'Website' }
     },
     es: {
       navTop: "Top", navRules: "Reglas", navAbout: "Sobre nosotros",
@@ -306,11 +306,11 @@ window.addEventListener('DOMContentLoaded', () => {
       errMinBid: "La puja mínima es de $2.",
       rulesHtml: "<h2>Reglas del Ranking</h2><ul><li>La puja mínima es de $2.</li><li>Para obtener el #1, tu puja debe superar al líder actual.</li><li>Prohibido enlaces maliciosos, estafas o señales falsas.</li><li>Pagos seguros procesados mediante Dodo Payments.</li></ul>",
       aboutHtml: "<h2>Sobre BIDmesto</h2><p>BIDmesto.lol es una clasificación transparente para traders, señales y proyectos cripto. Tu posición depende exclusivamente de tu puja.</p>",
-      cats: { all:'Todas las Categorías', crypto:'Cripto y Web3', forex:'Forex y Oro', stocks:'Acciones', signals:'Señales y VIP', bots:'Bots de Trading', other:'Otros' }
+      cats: { all:'Todas', twitter:'X (ex-Twitter)', education:'Education', youtube:'YouTube', discord:'Discord', prop:'Prop', telegram:'Telegram', website:'Website' }
     }
   };
 
-  const ICONS = { crypto:'🪙', forex:'📈', stocks:'📊', signals:'⚡', bots:'🤖', other:'✨' };
+  const ICONS = { twitter:'𝕏', education:'📚', youtube:'▶️', discord:'💬', prop:'💼', telegram:'✈️', website:'🌐' };
 
   let entries = [];
   
@@ -525,7 +525,6 @@ window.addEventListener('DOMContentLoaded', () => {
       claimBtn.disabled = true;
       claimBtn.innerText = 'Loading...';
 
-      // Vercel backend API'ga so'rov yuborish
       const response = await fetch('https://bidmesto-backend.vercel.app/api/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -535,7 +534,6 @@ window.addEventListener('DOMContentLoaded', () => {
       const data = await response.json();
 
       if (data.checkout_url) {
-        // Dodo Payments bergan xavfsiz va dinamik havolaga o'tish
         window.location.href = data.checkout_url;
       } else {
         errBox.textContent = data.error || "To'lov havolasini yaratishda xatolik bo'ldi.";
