@@ -8,6 +8,7 @@
 <link rel="icon" type="image/jpeg" href="favion.png.jpg">
 <link rel="apple-touch-icon" href="favion.png.jpg">
 
+<!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -25,9 +26,7 @@
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   
-  html, body {
-    margin: 0; padding: 0; width: 100%; overflow-x: hidden;
-  }
+  html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
 
   body {
     background-color: var(--bg-page); color: var(--text-primary);
@@ -40,7 +39,7 @@
     padding: 20px 16px 50px; display: flex; flex-direction: column; align-items: center;
   }
 
-  /* HEADER */
+  /* HEADER & TOP BADGES */
   header {
     width: 100%; display: flex; align-items: center; justify-content: space-between;
     margin-bottom: 24px; padding: 10px 0; flex-wrap: wrap; gap: 12px;
@@ -54,28 +53,28 @@
   nav a { transition: color 0.2s; cursor: pointer; }
   nav a:hover { color: var(--text-primary); }
 
-  /* TOP STATS BADGES */
+  /* TOP STATS BADGES (YUKORI REAL-TIME BLOKLAR) */
   .top-stats-container { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .visits-badge {
-    display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500;
-    color: var(--apple-blue); background: rgba(0, 102, 204, 0.1); padding: 5px 10px; border-radius: 999px;
+    display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600;
+    color: var(--apple-blue); background: rgba(0, 102, 204, 0.1); padding: 6px 12px; border-radius: 999px;
   }
   .clicks-badge {
-    display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500;
-    color: #ff9500; background: rgba(255, 149, 0, 0.1); padding: 5px 10px; border-radius: 999px;
+    display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600;
+    color: #ff9500; background: rgba(255, 149, 0, 0.12); padding: 6px 12px; border-radius: 999px;
   }
   .live-badge {
-    display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500;
-    color: #28cd41; background: rgba(40, 205, 65, 0.12); padding: 5px 10px; border-radius: 999px;
+    display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600;
+    color: #28cd41; background: rgba(40, 205, 65, 0.12); padding: 6px 12px; border-radius: 999px;
   }
-  .dot { width: 6px; height: 6px; border-radius: 50%; background: #28cd41; animation: pulse 1.5s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: #28cd41; animation: pulse 1.2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1; transform: scale(1);} 50%{opacity:.3; transform: scale(0.8);} }
 
   /* HERO SECTION */
   .hero { text-align: center; margin-bottom: 24px; width: 100%; }
   .hero h1 { font-size: 32px; font-weight: 700; letter-spacing: -1px; margin: 0 0 8px; color: var(--text-primary); line-height: 1.15; }
   .hero p { color: var(--text-secondary); font-size: 15px; max-width: 500px; margin: 0 auto; line-height: 1.4; }
-  .hero .stats-line { margin-top: 8px; font-size: 13px; color: var(--text-secondary); }
+  .hero .stats-line { margin-top: 8px; font-size: 13px; color: var(--text-secondary); font-weight: 500; }
 
   /* FORM CARD */
   .form-card {
@@ -181,7 +180,7 @@
       <a onclick="showPage('about')">О проекте</a>
     </nav>
     
-    <!-- YUQORI JONLI STATISTIKA BLOKI -->
+    <!-- YUQORI JONLI REAL-TIME STATISTIKA -->
     <div class="top-stats-container">
       <div class="visits-badge">👀 <span id="headerVisitsCount">1 000</span></div>
       <div class="clicks-badge">👆 <span id="headerClicksCount">0</span></div>
@@ -253,11 +252,12 @@
 </div>
 
 <script>
-const SUPABASE_URL = 'https://wtgtmeodtuimjvqoqfzc.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0Z3RtZW9kdHVpbWp2cW9xZnpjIiwicm9sZSI6ImF2b24iLCJpYXQiOjE3ODc2MDM3NDYsImV4cCI6MjEwMzE3OTc0Nn0.XiW-O2-TQ5m_7yyj7ZNAWJwPHZYMXekpZ9AaaZyfnRg';
-const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+window.addEventListener('DOMContentLoaded', () => {
+  const SUPABASE_URL = 'https://wtgtmeodtuimjvqoqfzc.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0Z3RtZW9kdHVpbWp2cW9xZnpjIiwicm9sZSI6ImF2b24iLCJpYXQiOjE3ODc2MDM3NDYsImV4cCI6MjEwMzE3OTc0Nn0.XiW-O2-TQ5m_7yyj7ZNAWJwPHZYMXekpZ9AaaZyfnRg';
+  
+  const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-(function(){
   const CATS = {
     all:'Все категории', ai:'ИИ и боты', market:'Маркетинг и PR',
     biz:'Бизнес', dev:'Разработка', social:'Соцсети и каналы', other:'Разное'
@@ -266,7 +266,7 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   let entries = [];
   
-  // STATISTIKA HISOBI
+  // TASHRIFLAR HISOB-KITOBI
   const BASE_VISITS = 1000;
   let savedVisitors = parseInt(localStorage.getItem('bidmesto_visitors')) || 0;
   savedVisitors++;
@@ -284,23 +284,23 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     window.scrollTo(0, 0);
   }
 
-  // JONLI REAL-TIME STATISTIKA FUNKSIYASI
+  // JONLI REAL-TIME STATISTIKA
   function updateLiveStats() {
-    const totalClicks = entries.reduce((sum, e) => sum + (e.clicks || 0), 0);
-    // Real-vaqt ko'rinish berish uchun tasodifiy onlayn soni (3 va 9 oralig'ida)
-    const onlineCount = Math.floor(Math.random() * 7) + 3;
+    const totalClicks = entries.reduce((sum, e) => sum + Number(e.clicks || 0), 0);
+    // Real-vaqt ko'rinishi berish uchun (3-8 oralig'ida avtomatik almashib turadi)
+    const onlineCount = Math.floor(Math.random() * 6) + 3; 
     
-    $('headerVisitsCount').textContent = formatMoney(totalVisitors);
-    $('headerClicksCount').textContent = formatMoney(totalClicks);
-    $('statsLine').textContent = `${formatMoney(totalVisitors)} посетителей · ${formatMoney(totalClicks)} переходов`;
-    $('onlineCount').textContent = onlineCount;
+    if($('headerVisitsCount')) $('headerVisitsCount').textContent = formatMoney(totalVisitors);
+    if($('headerClicksCount')) $('headerClicksCount').textContent = formatMoney(totalClicks);
+    if($('statsLine')) $('statsLine').textContent = `${formatMoney(totalVisitors)} посетителей · ${formatMoney(totalClicks)} переходов`;
+    if($('onlineCount')) $('onlineCount').textContent = onlineCount;
   }
 
-  // Har 4 soniyada onlayn hisoblagichni jonli yangilab turish
-  setInterval(updateLiveStats, 4000);
+  // HAR 3 SONIYADA REAL VAQTDA YANGILASH
+  setInterval(updateLiveStats, 3000);
 
   window.trackClick = async function(id, currentClicks) {
-    const newCount = (currentClicks || 0) + 1;
+    const newCount = Number(currentClicks || 0) + 1;
     await _supabase.from('entries').update({ clicks: newCount }).eq('id', id);
     fetchEntries();
   };
@@ -309,14 +309,14 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   async function fetchEntries() {
     try {
       const { data, error } = await _supabase.from('entries').select('*').order('bid', { ascending: false });
-      if (!error && data) {
+      if (error) {
+        console.error("Supabase xatosi:", error.message);
+      } else if (data) {
         entries = data;
         render();
-      } else {
-        console.error("Supabase xatosi:", error);
       }
     } catch (err) {
-      console.error("Ulanishda xato:", err);
+      console.error("Ulanish xatosi:", err);
     }
   }
 
@@ -345,7 +345,7 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     renderTabs();
     updateLiveStats();
 
-    const sorted = [...entries].sort((a,b)=>b.bid-a.bid);
+    const sorted = [...entries].sort((a,b)=>Number(b.bid)-Number(a.bid));
     const filtered = currentCat==='all' ? sorted : sorted.filter(e=>e.cat===currentCat);
 
     const total = entries.reduce((s,e)=>Number(s)+Number(e.bid),0);
@@ -364,7 +364,7 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     topThreeData.forEach((e, idx)=>{
       const rank = idx + 1;
-      const clicks = e.clicks || 0;
+      const clicks = Number(e.clicks || 0);
       const siteUrl = escapeHtml(e.url || '');
       const categoryName = CATS[e.cat] || e.cat;
       const categoryIcon = ICONS[e.cat] || '✨';
@@ -383,7 +383,7 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     restData.forEach((e, idx)=>{
       const rank = idx + 4;
-      const clicks = e.clicks || 0;
+      const clicks = Number(e.clicks || 0);
       const siteUrl = escapeHtml(e.url || '');
       const categoryName = CATS[e.cat] || e.cat;
       const categoryIcon = ICONS[e.cat] || '✨';
@@ -462,7 +462,7 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   fillCatSelect();
   updateClaimSumDisplay();
   fetchEntries();
-})();
+});
 </script>
 </body>
 </html>
