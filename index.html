@@ -8,7 +8,6 @@
 <link rel="icon" type="image/jpeg" href="favion.png.jpg">
 <link rel="apple-touch-icon" href="favion.png.jpg">
 
-<!-- Supabase SDK -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
 <style>
@@ -35,7 +34,7 @@
   }
 
   .wrap {
-    width: 100%; max-width: 680px; margin: 0 auto;
+    width: 100%; max-width: 760px; margin: 0 auto;
     padding: 20px 16px 50px; display: flex; flex-direction: column; align-items: center;
   }
 
@@ -131,19 +130,60 @@
   }
   .tab.active { background: var(--text-primary); color: #fff; border-color: var(--text-primary); font-weight: 600; }
 
-  .top3 { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+  /* PODIUM STYLES FOR TOP 3 */
+  .podium-container {
+    width: 100%; display: grid; grid-template-columns: 1fr; gap: 14px; margin-bottom: 16px;
+  }
+  @media(min-width: 640px) {
+    .podium-container { grid-template-columns: repeat(3, 1fr); align-items: end; }
+  }
+
+  .podium-card {
+    background: var(--bg-card); border: 1px solid var(--card-border); border-radius: var(--radius);
+    padding: 20px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; gap: 12px;
+  }
+  .podium-card.rank-1 {
+    border: 2px solid #1d1d1f; background: #fafafa; transform: translateY(-6px); box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  }
+  .claim-pill {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: #ff9500; color: #fff; font-size: 11px; font-weight: 700; padding: 4px 12px;
+    border-radius: 999px; white-space: nowrap; box-shadow: 0 2px 6px rgba(255,149,0,0.3);
+  }
+
+  .podium-header { display: flex; justify-content: space-between; align-items: center; }
+  .podium-rank {
+    font-weight: 700; font-size: 13px; background: #e5e5ea; color: var(--text-primary);
+    border-radius: 8px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+  }
+  .podium-card.rank-1 .podium-rank { background: #1d1d1f; color: #fff; }
+  .podium-bid { font-weight: 700; font-size: 16px; color: var(--text-primary); }
+
+  .podium-body { display: flex; flex-direction: column; gap: 6px; }
+  .podium-link { font-weight: 600; font-size: 15px; color: var(--apple-blue); text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .podium-link:hover { text-decoration: underline; }
+  
+  .podium-footer {
+    display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-secondary);
+    border-top: 1px solid var(--card-border); padding-top: 10px; margin-top: 4px;
+  }
+  .visit-link-btn {
+    background: var(--text-primary); color: #fff; text-decoration: none; font-size: 12px; font-weight: 600;
+    padding: 6px 12px; border-radius: 8px; transition: 0.2s;
+  }
+  .visit-link-btn:hover { opacity: 0.85; }
+
+  /* REST LIST (4+ RANKS) */
   #restList { width: 100%; display: flex; flex-direction: column; gap: 10px; }
 
   .rank-row {
     width: 100%; display: flex; align-items: center; gap: 12px; background: var(--bg-card);
     border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 14px 16px; transition: 0.2s; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
   }
-  .rank-row.gold { border-color: #e5c158; background: #fffdf5; }
   .rank-number {
     font-weight: 700; font-size: 13px; background: #e5e5ea; color: var(--text-primary);
     border-radius: 999px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
-  .rank-row.gold .rank-number { background: #f3c623; color: #000; }
   .category-icon { font-size: 16px; flex-shrink: 0; }
   .row-content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
   .row-main-line { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; }
@@ -169,7 +209,7 @@
   .card-page-content { width: 100%; background: var(--bg-card); border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 20px; margin-top: 10px; }
 
   @media(min-width: 600px) {
-    .wrap { max-width: 720px; padding: 30px 20px 60px; }
+    .wrap { max-width: 760px; padding: 30px 20px 60px; }
     .form-inputs-group { flex-direction: row; }
     .form-inputs-group input, .form-inputs-group select { flex: 1; }
     .form-actions-group { flex-direction: row; justify-content: space-between; }
@@ -195,365 +235,4 @@
       </div>
     </nav>
     
-    <!-- REAL-TIME STATS -->
-    <div class="top-stats-container">
-      <div class="visits-badge">👀 <span id="headerVisitsCount">1 000</span></div>
-      <div class="clicks-badge">👆 <span id="headerClicksCount">0</span></div>
-      <div class="live-badge"><span class="dot"></span> <span id="onlineCount">3</span> <span id="onlineLabel">online</span></div>
-    </div>
-  </header>
-
-  <!-- HOME PAGE -->
-  <div id="home" class="page-view active">
-    <div class="hero">
-      <h1 id="heroTitle">Claim The #1 Trader Spot</h1>
-      <p id="heroSubtitle">Outbid competitors, showcase your channel or trading service, and capture targeted trader traffic.</p>
-      <div class="stats-line" id="statsLine">1 000 visitors · 0 clicks</div>
-    </div>
-
-    <div class="form-card">
-      <div class="form-inputs-group">
-        <input type="text" id="bidUrl" class="input-field" placeholder="X profile, Telegram channel or Website">
-        <select id="bidCat" class="select-field"></select>
-      </div>
-      <div class="form-actions-group">
-        <div class="stepper">
-          <button id="decBtn" type="button">−</button>
-          <input type="number" id="bidAmount" value="10" min="2" step="5">
-          <button id="incBtn" type="button">+</button>
-        </div>
-        <button class="claim-btn" id="claimBtn" type="button"><span id="payText">Pay</span> $<span id="claimSum">10</span></button>
-      </div>
-      <div class="field-error" id="fieldError"></div>
-      <div class="hint" id="formHint">Minimum bid is $2. Instant activation via Card / Crypto.</div>
-    </div>
-
-    <div class="tabs-container">
-      <div class="tabs" id="tabs"></div>
-    </div>
-    
-    <div class="top3" id="top3"></div>
-    <div id="restList" style="width: 100%;"></div>
-  </div>
-
-  <!-- RULES -->
-  <div id="rules" class="page-view">
-    <div class="card-page-content" id="rulesContent">
-      <h2>Ranking Rules</h2>
-      <ul>
-        <li>Minimum bid is $2 USD.</li>
-        <li>To secure the #1 position, your bid must exceed the current leader's bid.</li>
-        <li>No scams, phishing, or illegal trading services allowed.</li>
-        <li>Instant card & crypto payments powered by Dodo Payments.</li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- ABOUT -->
-  <div id="about" class="page-view">
-    <div class="card-page-content" id="aboutContent">
-      <h2>About BIDmesto</h2>
-      <p>BIDmesto.lol is a transparent, real-time leaderboard for traders, signal providers, and crypto services. Your rank is purely determined by your bid.</p>
-    </div>
-  </div>
-
-  <footer>
-    <div class="total-label" id="totalLabel">Total Volume in Ranking</div>
-    <div class="total-amount">$<span id="totalSum">0</span></div>
-    <a href="mailto:bidmestosupport@gmail.com" class="support-btn" id="supportBtn">Support</a>
-    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 10px;">© BIDmesto.lol · Rank by Bid</div>
-  </footer>
-
-</div>
-
-<script>
-window.addEventListener('DOMContentLoaded', () => {
-  const SUPABASE_URL = 'https://wtgtmeodtuimjvqoqfzc.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0Z3RtZW9kdHVpbWp2cW9xZnpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MDM3NDYsImV4cCI6MjEwMzE3OTc0Nn0.XiW-O2-TQ5m_7yyj7ZNAWJwPHZYMXekpZ9AaaZyfnRg';
-  
-  const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-  let currentLang = 'en';
-
-  const I18N = {
-    en: {
-      navTop: "Top", navRules: "Rules", navAbout: "About",
-      heroTitle: "Claim The #1 Trader Spot",
-      heroSubtitle: "Outbid competitors, showcase your channel or trading service, and capture targeted trader traffic.",
-      inputPlaceholder: "X profile, Telegram link or Website",
-      payText: "Pay",
-      formHint: "Minimum bid is $2. Instant placement upon payment.",
-      visitorsText: "visitors", clicksText: "clicks", onlineText: "online",
-      emptyState: "Leaderboard is empty.<br>Be the first to claim #1 spot!",
-      totalLabel: "Total Volume in Ranking",
-      errEmptyUrl: "Please enter your link or @username.",
-      errMinBid: "Minimum bid is $2.",
-      rulesHtml: "<h2>Ranking Rules</h2><ul><li>Minimum bid is $2.</li><li>To claim #1, your bid must be higher than the current leader.</li><li>No scams, malicious links, or fake signal services.</li><li>Secure payments processed via Dodo Payments.</li></ul>",
-      aboutHtml: "<h2>About BIDmesto</h2><p>BIDmesto.lol is an open, transparent leaderboard for traders, signal providers, and crypto projects. Rank is determined solely by bid size.</p>",
-      cats: { all:'All Categories', twitter:'X (ex-Twitter)', education:'Education', youtube:'YouTube', discord:'Discord', prop:'Prop', telegram:'Telegram', website:'Website' }
-    },
-    es: {
-      navTop: "Top", navRules: "Reglas", navAbout: "Sobre nosotros",
-      heroTitle: "Consigue el Puesto #1 de Trading",
-      heroSubtitle: "Supera a tus competidores, promociona tu canal o servicio y atrae tráfico calificado.",
-      inputPlaceholder: "Perfil X, enlace Telegram o Sitio Web",
-      payText: "Pagar",
-      formHint: "Puja mínima $2. Colocación instantánea al pagar.",
-      visitorsText: "visitantes", clicksText: "clics", onlineText: "en línea",
-      emptyState: "El ranking está vacío.<br>¡Sé el primero en reclamar el puesto #1!",
-      totalLabel: "Volumen Total en Ranking",
-      errEmptyUrl: "Por favor ingresa tu enlace o @usuario.",
-      errMinBid: "La puja mínima es de $2.",
-      rulesHtml: "<h2>Reglas del Ranking</h2><ul><li>La puja mínima es de $2.</li><li>Para obtener el #1, tu puja debe superar al líder actual.</li><li>Prohibido enlaces maliciosos, estafas o señales falsas.</li><li>Pagos seguros procesados mediante Dodo Payments.</li></ul>",
-      aboutHtml: "<h2>Sobre BIDmesto</h2><p>BIDmesto.lol es una clasificación transparente para traders, señales y proyectos cripto. Tu posición depende exclusivamente de tu puja.</p>",
-      cats: { all:'Todas', twitter:'X (ex-Twitter)', education:'Education', youtube:'YouTube', discord:'Discord', prop:'Prop', telegram:'Telegram', website:'Website' }
-    }
-  };
-
-  const ICONS = { twitter:'𝕏', education:'📚', youtube:'▶️', discord:'💬', prop:'💼', telegram:'✈️', website:'🌐' };
-
-  let entries = [];
-  
-  const BASE_VISITS = 1200;
-  let savedVisitors = parseInt(localStorage.getItem('bidmesto_visitors')) || 0;
-  savedVisitors++;
-  localStorage.setItem('bidmesto_visitors', savedVisitors);
-  
-  let totalVisitors = BASE_VISITS + savedVisitors;
-  let currentCat = 'all';
-  const $ = id => document.getElementById(id);
-
-  function formatMoney(n){ return Math.round(n).toLocaleString('en-US'); }
-
-  window.setLanguage = function(lang) {
-    currentLang = lang;
-    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
-
-    const t = I18N[lang];
-    $('navTop').textContent = t.navTop;
-    $('navRules').textContent = t.navRules;
-    $('navAbout').textContent = t.navAbout;
-    $('heroTitle').textContent = t.heroTitle;
-    $('heroSubtitle').textContent = t.heroSubtitle;
-    $('bidUrl').placeholder = t.inputPlaceholder;
-    $('payText').textContent = t.payText;
-    $('formHint').textContent = t.formHint;
-    $('totalLabel').textContent = t.totalLabel;
-    $('onlineLabel').textContent = t.onlineText;
-    $('rulesContent').innerHTML = t.rulesHtml;
-    $('aboutContent').innerHTML = t.aboutHtml;
-
-    fillCatSelect();
-    render();
-  };
-
-  window.showPage = function(pageId) {
-    document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active');
-    window.scrollTo(0, 0);
-  };
-
-  function updateLiveStats() {
-    const totalClicks = entries.reduce((sum, e) => sum + Number(e.clicks || 0), 0);
-    const onlineCount = Math.floor(Math.random() * 6) + 4; 
-    const t = I18N[currentLang];
-    
-    if($('headerVisitsCount')) $('headerVisitsCount').textContent = formatMoney(totalVisitors);
-    if($('headerClicksCount')) $('headerClicksCount').textContent = formatMoney(totalClicks);
-    if($('statsLine')) $('statsLine').textContent = `${formatMoney(totalVisitors)} ${t.visitorsText} · ${formatMoney(totalClicks)} ${t.clicksText}`;
-    if($('onlineCount')) $('onlineCount').textContent = onlineCount;
-  }
-
-  setInterval(updateLiveStats, 3000);
-
-  window.trackClick = async function(id, currentClicks) {
-    const newCount = Number(currentClicks || 0) + 1;
-    await _supabase.from('entries').update({ clicks: newCount }).eq('id', id);
-  };
-
-  async function fetchEntries() {
-    try {
-      const { data, error } = await _supabase.from('entries').select('*').order('bid', { ascending: false });
-      if (error) {
-        console.error("Supabase Error:", error.message);
-      } else if (data) {
-        entries = data;
-        render();
-      }
-    } catch (err) {
-      console.error("Fetch Exception:", err);
-    }
-  }
-
-  _supabase
-    .channel('public:entries')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'entries' }, payload => {
-      fetchEntries();
-    })
-    .subscribe();
-
-  function renderTabs(){
-    const box = $('tabs'); box.innerHTML = '';
-    const cats = I18N[currentLang].cats;
-    Object.keys(cats).forEach(key=>{
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'tab' + (key===currentCat ? ' active':'');
-      b.textContent = cats[key];
-      b.onclick = ()=>{ currentCat = key; render(); };
-      box.appendChild(b);
-    });
-  }
-
-  function fillCatSelect(){
-    const sel = $('bidCat'); sel.innerHTML='';
-    const cats = I18N[currentLang].cats;
-    Object.keys(cats).filter(k=>k!=='all').forEach(key=>{
-      const o = document.createElement('option');
-      o.value = key; o.textContent = cats[key];
-      sel.appendChild(o);
-    });
-  }
-
-  function render(){
-    renderTabs();
-    updateLiveStats();
-
-    const sorted = [...entries].sort((a,b)=>Number(b.bid)-Number(a.bid));
-    const filtered = currentCat==='all' ? sorted : sorted.filter(e=>e.cat===currentCat);
-
-    const total = entries.reduce((s,e)=>Number(s)+Number(e.bid),0);
-    $('totalSum').textContent = formatMoney(total);
-
-    const top3box = $('top3'); top3box.innerHTML='';
-    const listBox = $('restList'); listBox.innerHTML='';
-
-    if(filtered.length===0){
-      listBox.innerHTML = `<div class="empty-state">${I18N[currentLang].emptyState}</div>`;
-      return;
-    }
-
-    const topThreeData = filtered.slice(0,3);
-    const restData = filtered.slice(3);
-
-    topThreeData.forEach((e, idx)=>{
-      const rank = idx + 1;
-      const clicks = Number(e.clicks || 0);
-      const siteUrl = escapeHtml(e.url || '');
-      const categoryName = I18N[currentLang].cats[e.cat] || e.cat;
-      const categoryIcon = ICONS[e.cat] || '✨';
-
-      const card = document.createElement('div');
-      card.className = 'rank-row' + (rank===1 ? ' gold':'');
-      card.innerHTML =
-        '<div class="rank-number">#'+rank+'</div>'+
-        '<div class="category-icon">'+categoryIcon+'</div>'+
-        '<div class="row-content">'+
-          '<div class="row-main-line"><a href="'+siteUrl+'" target="_blank" onclick="trackClick('+e.id+','+clicks+')" class="row-link">'+siteUrl+'</a><span class="row-bid-amount">$'+formatMoney(e.bid)+'</span></div>'+
-          '<div class="row-meta-line"><span class="row-meta-category">'+categoryName+'</span><span class="row-meta-clicks">👆 '+formatMoney(clicks)+' '+I18N[currentLang].clicksText+'</span></div>'+
-        '</div>';
-      top3box.appendChild(card);
-    });
-
-    restData.forEach((e, idx)=>{
-      const rank = idx + 4;
-      const clicks = Number(e.clicks || 0);
-      const siteUrl = escapeHtml(e.url || '');
-      const categoryName = I18N[currentLang].cats[e.cat] || e.cat;
-      const categoryIcon = ICONS[e.cat] || '✨';
-
-      const row = document.createElement('div');
-      row.className = 'rank-row';
-      row.innerHTML =
-        '<div class="rank-number">#'+rank+'</div>'+
-        '<div class="category-icon">'+categoryIcon+'</div>'+
-        '<div class="row-content">'+
-          '<div class="row-main-line"><a href="'+siteUrl+'" target="_blank" onclick="trackClick('+e.id+','+clicks+')" class="row-link">'+siteUrl+'</a><span class="row-bid-amount">$'+formatMoney(e.bid)+'</span></div>'+
-          '<div class="row-meta-line"><span class="row-meta-category">'+categoryName+'</span><span class="row-meta-clicks">👆 '+formatMoney(clicks)+' '+I18N[currentLang].clicksText+'</span></div>'+
-        '</div>';
-      listBox.appendChild(row);
-    });
-  }
-
-  function escapeHtml(s){
-    if(!s) return '';
-    const d = document.createElement('div');
-    d.textContent = s;
-    return d.innerHTML;
-  }
-
-  function updateClaimSumDisplay(){
-    $('claimSum').textContent = formatMoney(parseInt($('bidAmount').value||2));
-  }
-
-  $('decBtn').onclick = ()=>{
-    const inp = $('bidAmount');
-    inp.value = Math.max(2, parseInt(inp.value||2) - 5);
-    updateClaimSumDisplay();
-  };
-  $('incBtn').onclick = ()=>{
-    const inp = $('bidAmount');
-    inp.value = parseInt(inp.value||2) + 5;
-    updateClaimSumDisplay();
-  };
-  $('bidAmount').oninput = updateClaimSumDisplay;
-
-  // DYNAMIC CHECKOUT VIA VERCEL BACKEND API
-  $('claimBtn').onclick = async () => {
-    const errBox = $('fieldError');
-    const claimBtn = $('claimBtn');
-    errBox.style.display = 'none';
-
-    let url = $('bidUrl').value.trim();
-    const amount = parseInt($('bidAmount').value || '2');
-    const category = $('bidCat').value;
-
-    if(!url){
-      errBox.textContent = I18N[currentLang].errEmptyUrl;
-      errBox.style.display = 'block';
-      return;
-    }
-
-    if(amount < 2){
-      errBox.textContent = I18N[currentLang].errMinBid;
-      errBox.style.display = 'block';
-      return;
-    }
-
-    try {
-      claimBtn.disabled = true;
-      claimBtn.innerText = 'Loading...';
-
-      const response = await fetch('https://bidmesto-backend.vercel.app/api/create-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount, url, category })
-      });
-
-      const data = await response.json();
-
-      if (data.checkout_url) {
-        window.location.href = data.checkout_url;
-      } else {
-        errBox.textContent = data.error || "To'lov havolasini yaratishda xatolik bo'ldi.";
-        errBox.style.display = 'block';
-        claimBtn.disabled = false;
-        claimBtn.innerHTML = `<span id="payText">${I18N[currentLang].payText}</span> $<span id="claimSum">${amount}</span>`;
-      }
-    } catch (err) {
-      console.error("Payment API error:", err);
-      errBox.textContent = "Server bilan bog'lanib bo'lmadi.";
-      errBox.style.display = 'block';
-      claimBtn.disabled = false;
-      claimBtn.innerHTML = `<span id="payText">${I18N[currentLang].payText}</span> $<span id="claimSum">${amount}</span>`;
-    }
-  };
-
-  fillCatSelect();
-  updateClaimSumDisplay();
-  fetchEntries();
-});
-</script>
-</body>
-</html>
+    <div class="top-stats-
