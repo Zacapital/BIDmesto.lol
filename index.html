@@ -63,21 +63,12 @@
   }
   .lang-btn.active { background: #fff; color: var(--text-primary); box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
 
-  /* REAL-TIME BADGES */
-  .top-stats-container { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  .visits-badge {
-    display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600;
-    color: var(--apple-blue); background: rgba(0, 102, 204, 0.1); padding: 6px 12px; border-radius: 999px;
+  /* REAL-TIME STATS (SINGLE CLEAN STYLE) */
+  .top-stats-container {
+    display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary); background: rgba(0, 0, 0, 0.04); padding: 6px 14px; border-radius: 999px; margin-bottom: 16px;
   }
-  .clicks-badge {
-    display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600;
-    color: #ff9500; background: rgba(255, 149, 0, 0.12); padding: 6px 12px; border-radius: 999px;
-  }
-  .live-badge {
-    display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600;
-    color: #28cd41; background: rgba(40, 205, 65, 0.12); padding: 6px 12px; border-radius: 999px;
-  }
-  .dot { width: 7px; height: 7px; border-radius: 50%; background: #28cd41; animation: pulse 1.2s infinite; }
+  .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #28cd41; display: inline-block; animation: pulse 1.2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1; transform: scale(1);} 50%{opacity:.3; transform: scale(0.8);} }
 
   /* HERO SECTION */
@@ -133,7 +124,7 @@
   }
   .tab.active { background: var(--text-primary); color: #fff; border-color: var(--text-primary); font-weight: 600; }
 
-  /* LEADERBOARD CONTAINER STYLES (MATCHING SCREENSHOT) */
+  /* LEADERBOARD CONTAINER STYLES */
   .leaderboard-toggle-container {
     display: flex; justify-content: center; gap: 20px; margin-bottom: 16px; font-size: 14px; font-weight: 600;
   }
@@ -231,21 +222,21 @@
         <button class="lang-btn" onclick="setLanguage('es')">ES</button>
       </div>
     </nav>
-    
-    <!-- REAL-TIME STATS -->
-    <div class="top-stats-container">
-      <div class="visits-badge">👀 <span id="headerVisitsCount">1,456,367</span></div>
-      <div class="clicks-badge">👆 <span id="headerClicksCount">0</span></div>
-      <div class="live-badge"><span class="dot"></span> <span id="onlineCount">215</span> <span id="onlineLabel">online</span></div>
-    </div>
   </header>
+
+  <!-- CLEAN REAL-TIME STATS BAR -->
+  <div class="top-stats-container">
+    <span><span class="live-dot"></span> <span id="onlineCount">215</span> <span id="onlineLabel">online</span></span>
+    <span>·</span>
+    <span><span id="headerVisitsCount">1,500</span> <span id="visitorsLabel">visitors</span></span>
+  </div>
 
   <!-- HOME PAGE -->
   <div id="home" class="page-view active">
     <div class="hero">
       <h1 id="heroTitle">Claim <span class="claim-highlight">#1</span> for <span class="price-highlight">$17005</span></h1>
       <p id="heroSubtitle">Outbid competitors, showcase your channel or trading service, and capture targeted trader traffic.</p>
-      <div class="stats-line" id="statsLine">1,456,367 visitors · 0 clicks</div>
+      <div class="stats-line" id="statsLine">1,500 visitors · 0 clicks</div>
     </div>
 
     <div class="form-card">
@@ -269,7 +260,7 @@
       <div class="tabs" id="tabs"></div>
     </div>
 
-    <!-- LEADERBOARD SWITCHER (ALL-TIME / TODAY) -->
+    <!-- LEADERBOARD SWITCHER -->
     <div class="leaderboard-toggle-container">
       <div class="lb-toggle-tab active" id="tabAllTime">🏆 All-time</div>
       <div class="lb-toggle-tab" id="tabToday">🔥 Today</div>
@@ -357,11 +348,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
   let entries = [];
   
-  const BASE_VISITS = 1456367;
+  // Visitors count set starting from 1500 + localStorage increment
   let savedVisitors = parseInt(localStorage.getItem('bidmesto_visitors')) || 0;
-  if(savedVisitors === 0) savedVisitors = 1;
+  if(savedVisitors === 0) {
+    savedVisitors = 1500;
+    localStorage.setItem('bidmesto_visitors', savedVisitors);
+  }
+  let totalVisitors = savedVisitors;
   
-  let totalVisitors = BASE_VISITS + savedVisitors;
   let currentCat = 'all';
   const $ = id => document.getElementById(id);
 
@@ -381,6 +375,7 @@ window.addEventListener('DOMContentLoaded', () => {
     $('formHint').textContent = t.formHint;
     $('totalLabel').textContent = t.totalLabel;
     $('onlineLabel').textContent = t.onlineText;
+    $('visitorsLabel').textContent = t.visitorsText;
     $('rulesContent').innerHTML = t.rulesHtml;
     $('aboutContent').innerHTML = t.aboutHtml;
 
@@ -394,9 +389,16 @@ window.addEventListener('DOMContentLoaded', () => {
     window.scrollTo(0, 0);
   };
 
+  // Auto-calculated dynamic online count (oscillates naturally between 180 and 260)
+  function getDynamicOnlineCount() {
+    let baseOnline = 210;
+    let randomFluctuation = Math.floor(Math.sin(Date.now() / 5000) * 25) + Math.floor(Math.random() * 10);
+    return Math.max(150, baseOnline + randomFluctuation);
+  }
+
   function updateLiveStats() {
     const totalClicks = entries.reduce((sum, e) => sum + Number(e.clicks || 0), 0);
-    const onlineCount = 215; 
+    const onlineCount = getDynamicOnlineCount();
     const t = I18N[currentLang];
     
     if($('headerVisitsCount')) $('headerVisitsCount').textContent = formatMoney(totalVisitors);
@@ -404,6 +406,9 @@ window.addEventListener('DOMContentLoaded', () => {
     if($('statsLine')) $('statsLine').textContent = `${formatMoney(totalVisitors)} ${t.visitorsText} · ${formatMoney(totalClicks)} ${t.clicksText}`;
     if($('onlineCount')) $('onlineCount').textContent = onlineCount;
   }
+
+  // Update online count every 5 seconds dynamically
+  setInterval(updateLiveStats, 5000);
 
   window.trackClick = async function(id, currentClicks) {
     const newCount = Number(currentClicks || 0) + 1;
@@ -467,7 +472,6 @@ window.addEventListener('DOMContentLoaded', () => {
     const top3box = $('top3'); top3box.innerHTML='';
     const listBox = $('restList'); listBox.innerHTML='';
 
-    // Update Hero Title top price dynamically based on #1
     if(filtered.length > 0) {
       const topBid = filtered[0].bid || 17005;
       const t = I18N[currentLang];
@@ -481,15 +485,26 @@ window.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const topThreeData = filtered.slice(0,3);
+    const topThreeRaw = filtered.slice(0,3);
+    
+    // Reorder Top 3 so that #1 is in the middle (Order: #2, #1, #3)
+    let topThreeData = [];
+    if (topThreeRaw.length === 3) {
+      topThreeData = [topThreeRaw[1], topThreeRaw[0], topThreeRaw[2]];
+    } else if (topThreeRaw.length === 2) {
+      topThreeData = [topThreeRaw[1], topThreeRaw[0]];
+    } else {
+      topThreeData = topThreeRaw;
+    }
+
     const restData = filtered.slice(3);
 
-    topThreeData.forEach((e, idx)=>{
-      const rank = idx + 1;
+    topThreeData.forEach((e)=>{
+      const originalIdx = filtered.indexOf(e);
+      const rank = originalIdx + 1;
       const clicks = Number(e.clicks || 0);
       const siteUrl = escapeHtml(e.url || '');
       
-      // Parse clean domain name for title display like screenshot (e.g. see.io)
       let displayTitle = siteUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
       if(displayTitle.includes('/')) displayTitle = displayTitle.split('/')[0];
 
@@ -553,7 +568,6 @@ window.addEventListener('DOMContentLoaded', () => {
   };
   $('bidAmount').oninput = updateClaimSumDisplay;
 
-  // DYNAMIC CHECKOUT VIA VERCEL BACKEND API
   $('claimBtn').onclick = async () => {
     const errBox = $('fieldError');
     const claimBtn = $('claimBtn');
